@@ -202,7 +202,7 @@ module myip_v1_0
                     read_counter    <= 0;
                     A_write_en  <= 0;
                     B_write_en  <= 0;
-                    Start <= 0;  // Deassert Start after 1 cycle
+                    // Start <= 0;  // Deassert Start after 1 cycle
 					// Coprocessor function to be implemented (matrix multiply) should be here. Right now, nothing happens here.
 					if (Done) begin
 						Start 		<= 0;
