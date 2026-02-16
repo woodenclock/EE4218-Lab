@@ -27,3 +27,4 @@ update_compile_order -fileset sources_1
 reset_run synth_1
 launch_runs impl_1 -to_step write_bitstream -jobs 20
 wait_on_run impl_1
+write_hw_platform -fixed -include_bit -force -file {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/design_1_wrapper.xsa}

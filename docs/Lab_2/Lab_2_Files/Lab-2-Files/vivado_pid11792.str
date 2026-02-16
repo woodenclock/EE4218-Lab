@@ -302,3 +302,58 @@ dismissDialog("Bitstream Generation Completed"); // W.a (dialog2)
 // HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:01:34 AM SGT
 // HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:02:15 AM SGT
 // HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:02:55 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:03:35 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:04:16 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:04:56 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:05:36 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:06:17 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:06:57 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:07:38 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:08:18 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:08:58 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:09:39 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:10:19 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:10:59 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:11:39 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:12:19 AM SGT
+// Elapsed time: 1131 seconds
+selectButton((HResource) null, "RDIResource.FrameControlsPanel_HELP_Tcl_Console"); // P.a (RDIResource.FrameControlsPanel_HELP_Tcl_Console)
+selectButton((HResource) null, "RDIResource.FrameControlsPanel_MINIMIZE_Tcl_Console"); // P.a (RDIResource.FrameControlsPanel_MINIMIZE_Tcl_Console)
+selectMenu(PAResourceItoN.MainMenuMgr_EDIT, "Edit"); // ah (PAResourceItoN.MainMenuMgr_EDIT, Edit)
+dismissMenu(PAResourceItoN.MainMenuMgr_EDIT, "Edit"); // ah (PAResourceItoN.MainMenuMgr_EDIT, Edit)
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // ah (PAResourceItoN.MainMenuMgr_FILE, File)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // ah (PAResourceItoN.MainMenuMgr_FILE, File)
+selectMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // ah (PAResourceItoN.MainMenuMgr_FILE, File)
+selectMenu(PAResourceItoN.MainMenuMgr_PROJECT, "Project"); // am (PAResourceItoN.MainMenuMgr_PROJECT, Project)
+selectMenu(PAResourceItoN.MainMenuMgr_CHECKPOINT, "Checkpoint"); // am (PAResourceItoN.MainMenuMgr_CHECKPOINT, Checkpoint)
+selectMenu(PAResourceItoN.MainMenuMgr_IP, "IP"); // am (PAResourceItoN.MainMenuMgr_IP, IP)
+selectMenu(PAResourceItoN.MainMenuMgr_TEXT_EDITOR, "Text Editor"); // am (PAResourceItoN.MainMenuMgr_TEXT_EDITOR, Text Editor)
+selectMenu(PAResourceItoN.MainMenuMgr_IMPORT, "Import"); // am (PAResourceItoN.MainMenuMgr_IMPORT, Import)
+selectMenu(PAResourceItoN.MainMenuMgr_EXPORT, "Export"); // am (PAResourceItoN.MainMenuMgr_EXPORT, Export)
+selectMenuItem(PAResourceCommand.PACommandNames_EXPORT_HARDWARE, "Export Hardware..."); // ap (PAResourceCommand.PACommandNames_EXPORT_HARDWARE, export_hardware_menu)
+dismissMenu(PAResourceItoN.MainMenuMgr_FILE, "File"); // ah (PAResourceItoN.MainMenuMgr_FILE, File)
+// Run Command: PAResourceCommand.PACommandNames_EXPORT_HARDWARE
+// Tcl (Dont Echo) Command: 'get_property pfm_name [get_files -all {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.srcs/sources_1/bd/design_1/design_1.bd}]'
+// Tcl Message: ERROR: [Common 17-55] 'get_property' expects at least one object. Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object. 
+selectButton("NEXT", "Next", "Export Hardware Platform"); // JButton (NEXT)
+selectRadioButton(PAResourceEtoH.ExportFixedPlatformWizard_INCLUDE_BITSTREAM, "Include bitstream/binary. This platform includes the complete hardware implementation and bitstream/binary, in addition to the hardware specification for software tools."); // b (PAResourceEtoH.ExportFixedPlatformWizard_INCLUDE_BITSTREAM)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:12:59 AM SGT
+selectButton("NEXT", "Next", "Export Hardware Platform"); // JButton (NEXT)
+selectButton("NEXT", "Next", "Export Hardware Platform"); // JButton (NEXT)
+// Tcl (Dont Echo) Command: 'get_property pfm_name [get_files -all {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.srcs/sources_1/bd/design_1/design_1.bd}]'
+selectButton("FINISH", "Finish", "Export Hardware Platform"); // JButton (FINISH)
+// 'n' command handler elapsed time: 27 seconds
+// Tcl Message: ERROR: [Common 17-55] 'get_property' expects at least one object. Resolution: If [get_<value>] was used to populate the object, check to make sure this command returns at least one valid object. 
+dismissDialog("Export Hardware Platform"); // d (dialog3)
+// Tcl Message: write_hw_platform -fixed -include_bit -force -file {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/design_1_wrapper.xsa} 
+// Tcl Message: INFO: [Projectvivado 1-1918] Creating Hardware Platform: C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/design_1_wrapper.xsa ... 
+// Tcl Message: INFO: [Projectvivado 1-1943] The Hardware Platform can be used for Hardware INFO: [Projectvivado 1-1941] Successfully created Hardware Platform: C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/design_1_wrapper.xsa 
+// Tcl Message: INFO: [Hsi 55-2053] elapsed time for repository (C:/AMDDesignTools/2025.2/Vivado/data/embeddedsw) loading 3 seconds 
+// Tcl Message: write_hw_platform: Time (s): cpu = 00:00:04 ; elapsed = 00:00:07 . Memory (MB): peak = 1963.676 ; gain = 122.375 
+dismissDialog("Export Hardware Platform"); // bk (Export Hardware Platform Progress)
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:13:40 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:14:20 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:15:00 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:15:40 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:16:21 AM SGT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,240 MB. GUI used memory: 79 MB. Current time: 2/17/26, 3:17:01 AM SGT
