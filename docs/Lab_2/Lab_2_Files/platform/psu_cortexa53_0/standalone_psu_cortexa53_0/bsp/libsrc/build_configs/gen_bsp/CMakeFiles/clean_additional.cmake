@@ -1,0 +1,11 @@
+# Additional clean files
+cmake_minimum_required(VERSION 3.16)
+
+if("${CONFIG}" STREQUAL "" OR "${CONFIG}" STREQUAL "")
+  file(REMOVE_RECURSE
+  "C:\\Users\\ELVIS\\EE4218-Lab\\EE4218-Lab\\docs\\Lab_2\\Lab_2_Files\\platform\\psu_cortexa53_0\\standalone_psu_cortexa53_0\\bsp\\include\\sleep.h"
+  "C:\\Users\\ELVIS\\EE4218-Lab\\EE4218-Lab\\docs\\Lab_2\\Lab_2_Files\\platform\\psu_cortexa53_0\\standalone_psu_cortexa53_0\\bsp\\include\\xiltimer.h"
+  "C:\\Users\\ELVIS\\EE4218-Lab\\EE4218-Lab\\docs\\Lab_2\\Lab_2_Files\\platform\\psu_cortexa53_0\\standalone_psu_cortexa53_0\\bsp\\include\\xtimer_config.h"
+  "C:\\Users\\ELVIS\\EE4218-Lab\\EE4218-Lab\\docs\\Lab_2\\Lab_2_Files\\platform\\psu_cortexa53_0\\standalone_psu_cortexa53_0\\bsp\\lib\\libxiltimer.a"
+  )
+endif()
