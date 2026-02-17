@@ -28,22 +28,22 @@ module myip_v1_0
 		M_AXIS_TVALID,
 		M_AXIS_TDATA,
 		M_AXIS_TLAST,
-		M_AXIS_TREADY,
+		M_AXIS_TREADY
 		// DO NOT EDIT ABOVE THIS LINE ////////////////////
 	);
 
-	input					ACLK;    		// Synchronous clock
-	input					ARESETN; 		// System reset, active low
+	input					ACLK;    		     // Synchronous clock
+	input					ARESETN; 		     // System reset, active low
 	// slave in interface
-	output	reg				S_AXIS_TREADY;  // Ready to accept data in
-	input	[31 : 0]		S_AXIS_TDATA;   // Data in
-	input					S_AXIS_TLAST;   // Optional data in qualifier
-	input					S_AXIS_TVALID;  // Data in is valid
+	output	reg				S_AXIS_TREADY;       // Ready to accept data in
+	input	[31 : 0]		S_AXIS_TDATA;        // Data in
+	input					S_AXIS_TLAST;        // Optional data in qualifier
+	input					S_AXIS_TVALID;       // Data in is valid
 	// master out interface
-	output	reg				M_AXIS_TVALID;  // Data out is valid
-	output	reg [31 : 0]	M_AXIS_TDATA = 0;   // Data Out
-	output	reg				M_AXIS_TLAST;   // Optional data out qualifier
-	input					M_AXIS_TREADY;  // Connected slave device is ready to accept data out
+	output	reg				M_AXIS_TVALID;       // Data out is valid
+	output	reg [31 : 0]	M_AXIS_TDATA = 0;    // Data Out
+	output	reg				M_AXIS_TLAST;        // Optional data out qualifier
+	input					M_AXIS_TREADY;       // Connected slave device is ready to accept data out
 
 //----------------------------------------
 // Implementation Section
