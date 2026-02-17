@@ -45,6 +45,7 @@ int UartPsInitialise(u16 DeviceId);
 int UartPsInitialise(UINTPTR BaseAddress);
 #endif
 void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]);
+void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]);
 
 /************************** Variable Definitions *****************************/
 
@@ -104,37 +105,81 @@ void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
     bool matrixBReady = false;
     u8 ARecvBuffer[MAX_A_CSV];
     u8 BRecvBuffer[MAX_B_CSV];
-    u32 bytesReceived = 0;
+    u32 ABytesReceived = 0;
     u8 numRowsReceived = 0;
-    int received = 0;
     xil_printf("Ready to receive A.csv\r\n");
     while (!matrixAReady) {
-        while ((XUartPs_Recv(&Uart_Ps, &ARecvBuffer[bytesReceived], 1)) <= 0) {
+        while ((XUartPs_Recv(&Uart_Ps, &ARecvBuffer[ABytesReceived], 1)) <= 0) {
         }
-        if(bytesReceived >= A_COLS &&
-            ARecvBuffer[bytesReceived] == '\n') {
+        if(ABytesReceived >= A_COLS &&
+            ARecvBuffer[ABytesReceived] == '\n') {
             numRowsReceived++;
             if(numRowsReceived >= A_ROWS) {
                 matrixAReady = true;
             }
         }
-        bytesReceived++;
+        ABytesReceived++;
     }
-    xil_printf("Received %d bytes for A.csv\r\n", bytesReceived);
+    xil_printf("Received %d bytes for A.csv\r\n", ABytesReceived);
     xil_printf("Ready to receive B.csv\r\n");
-    bytesReceived = 0;
+    u32 BBytesReceived = 0;
     numRowsReceived = 0;
     while (!matrixBReady) {
-        while ((XUartPs_Recv(&Uart_Ps, &BRecvBuffer[bytesReceived], 1)) <= 0) {
+        while ((XUartPs_Recv(&Uart_Ps, &BRecvBuffer[BBytesReceived], 1)) <= 0) {
         }
-        if(bytesReceived >= B_COLS &&
-            BRecvBuffer[bytesReceived] == '\n') {
+        if(BBytesReceived >= B_COLS &&
+            BRecvBuffer[BBytesReceived] == '\n') {
             numRowsReceived++;
             if(numRowsReceived >= B_ROWS) {
                 matrixBReady = true;
             }
         }
-        bytesReceived++;
+        BBytesReceived++;
     }
-    xil_printf("Received %d bytes for B.csv\r\n", bytesReceived);
+    xil_printf("Received %d bytes for B.csv\r\n", BBytesReceived);
+    parseData(ARecvBuffer, BRecvBuffer, ABytesReceived, BBytesReceived, A, B);
+}
+
+void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
+    int row = 0;
+    int col = 0;
+    int val = 0;
+    for(u32 i = 0; i < ABytesReceived; i ++) {
+        if(ARecvBuffer[i] == '\r') {
+            continue;
+        } else if(ARecvBuffer[i] == '\n') {
+            A[row][col] = val;
+            row++;
+            col = 0;
+            val = 0;
+        } else if(ARecvBuffer[i] == ',') {
+            A[row][col] = val;
+            col++;
+            val = 0;
+        } else {
+            int num = (int)(ARecvBuffer[i] & ~ASCII_MASK);
+            val = val * 10 + num;
+        }
+    }
+
+    row = 0;
+    col = 0;
+    val = 0;
+    for(u32 i = 0; i < BBytesReceived; i ++) {
+        if(BRecvBuffer[i] == '\r') {
+            continue;
+        } else if(BRecvBuffer[i] == '\n') {
+            B[row][col] = val;
+            row++;
+            col = 0;
+            val = 0;
+        } else if(BRecvBuffer[i] == ',') {
+            B[row][col] = val;
+            col++;
+            val = 0;
+        } else {
+            int num = (int)(BRecvBuffer[i] & ~ASCII_MASK);
+            val = val * 10 + num;
+        }
+    }
 }
