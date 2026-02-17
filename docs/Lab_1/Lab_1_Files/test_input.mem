@@ -28,3 +28,78 @@
 40
 40
 40
+// third input vector
+// matrix A
+40
+40
+40
+40
+20
+20
+20
+20
+// matrix B
+01
+01
+01
+01
+// fourth input vector
+// matrix A
+32
+32
+32
+32
+0A
+14
+1E
+28
+// matrix B
+02
+02
+02
+02
+// fifth input vector
+// matrix A
+7F
+7F
+7F
+7F
+7F
+7F
+7F
+7F
+// matrix B
+7F
+7F
+7F
+7F
+// sixth input vector
+// matrix A
+0A
+14
+1E
+28
+01
+02
+03
+04
+// matrix B
+00
+00
+08
+00
+// seventh input vector
+// matrix A
+64
+64
+64
+64
+40
+40
+40
+40
+// matrix B
+04
+04
+04
+04

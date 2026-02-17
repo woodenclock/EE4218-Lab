@@ -89,7 +89,7 @@ module myip_v1_0
 	wire 	[RES_depth_bits-1:0] RES_write_address;		// matrix_multiply_0 -> RES_RAM.
 	wire 	[width-1:0] RES_write_data_in;				// matrix_multiply_0 -> RES_RAM.
 	reg 	RES_read_en = 0;  							// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
-	wire    [RES_depth_bits-1:0] RES_read_address = write_counter;	// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
+	reg    [RES_depth_bits-1:0] RES_read_address;	// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
 	wire	[width-1:0] RES_read_data_out;				// RES_RAM -> myip_v1_0
 	
 	// wires (or regs) to connect to matrix_multiply for assignment 1
@@ -108,7 +108,6 @@ module myip_v1_0
 	localparam Read_Inputs = 4'b0100;
 	localparam Compute = 4'b0010;
 	localparam Write_Outputs  = 4'b0001;
-	localparam Wait = 4'b0011;
 	
 	localparam Read_A = 0;
 	localparam Read_B = 1;
@@ -206,20 +205,18 @@ module myip_v1_0
 					// Coprocessor function to be implemented (matrix multiply) should be here. Right now, nothing happens here.
 					if (Done) begin
 						Start 		<= 0;
-						state		<= Wait;
 						RES_read_en 		<= 1;
+						RES_read_address    <= 0;
+					end
+					else if (RES_read_en) begin
+					    state            <= Write_Outputs;
+                        RES_read_address <= 1;
+                        M_AXIS_TVALID    <= 0;
+                        write_counter <= 0;
 					end
 					// Possible to save a cycle by asserting M_AXIS_TVALID and presenting M_AXIS_TDATA just before going into 
 					// Write_Outputs state. However, need to adjust write_counter limits accordingly
 					// Alternatively, M_AXIS_TVALID and M_AXIS_TDATA can be asserted combinationally to save a cycle.
-				end
-			
-				Wait: // To allow 1 clock cycle for RES_read_data_out to update
-				begin
-					RES_read_en <= 1;
-					M_AXIS_TVALID <= 0;
-					
-					state <= Write_Outputs;
 				end
 				
 				Write_Outputs:
@@ -231,17 +228,18 @@ module myip_v1_0
 
 					if (M_AXIS_TREADY == 1) 
 					begin
-						if (write_counter == NUMBER_OF_OUTPUT_WORDS-1)
+						if (write_counter == NUMBER_OF_OUTPUT_WORDS - 1)
 						begin
 							state	<= Idle;
 							M_AXIS_TLAST	<= 1;
+							RES_read_en <= 0;
 							// M_AXIS_TLAST, though optional in AXIS, is necessary in practice as AXI Stream FIFO and AXI DMA expects it.
 						end
 						else
 						begin
-							write_counter	<= write_counter + 1;
-
-							state <= Wait;
+						    RES_read_en <= 1;
+							RES_read_address	<= RES_read_address + 1;
+							write_counter <= write_counter + 1;
 						end
 					end
 				end
