@@ -19,3 +19,23 @@
 
 _ide/logs
 _ide/.wsdata
+
+#Ignore imported examples
+/xuartps_hello_world_example
+
+/_ide
+_ide/
+/platform
+
+src/.cache/
+.cache/
+
+*.yaml
+*.bit
+*.tcl
+*.json
+*.txt
+*.cmake
+*.clangd
+*.ld
+!*.c
