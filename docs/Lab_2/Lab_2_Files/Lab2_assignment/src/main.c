@@ -64,7 +64,7 @@ void UartReceiveData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32* 
 void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, u32 SourceBuffer[A_SIZE + B_SIZE]);
 
 // AXI stream functions
-int AXISTxSend(XLlFifo *InstancePtr, u32 *SourceAddr, int transmitSize);
+int AXISTxSend(XLlFifo *InstancePtr, u32 SourceAddr[A_SIZE + B_SIZE]);
 int AXISRxReceive(XLlFifo *InstancePtr, u32 *DestinationAddr);
 
 void getMatrices(u32 DestinationBuffer[A_SIZE + B_SIZE], u32 A[A_ROWS][A_COLS], u32 B[B_ROWS][B_COLS]);
@@ -73,17 +73,18 @@ void getMatrices(u32 DestinationBuffer[A_SIZE + B_SIZE], u32 A[A_ROWS][A_COLS], 
 XUartPs Uart_Ps;		/* The instance of the UART Driver */
 XLlFifo FifoInstance;
 
+u32 SourceBuffer[A_SIZE + B_SIZE];
+u32 DestinationBuffer[A_SIZE + B_SIZE];
+
+u8 ARecvBuffer[MAX_A_CSV];
+u8 BRecvBuffer[MAX_B_CSV];
+u32 ABytesReceived = 0;
+u32 BBytesReceived = 0;
+
 /*****************************************************************************/
 int main(void)
 {
 	int Status;
-    u8 ARecvBuffer[MAX_A_CSV];
-    u8 BRecvBuffer[MAX_B_CSV];
-    u32 ABytesReceived = 0;
-    u32 BBytesReceived = 0;
-
-    u32 SourceBuffer[A_SIZE + B_SIZE];
-    u32 DestinationBuffer[A_SIZE + B_SIZE];
     
     u32 A[A_ROWS][A_COLS]; 
     u32 B[B_ROWS][B_COLS];
@@ -92,11 +93,25 @@ int main(void)
 
 #ifndef SDT
 	Status = UartPsInitialise(UART_DEVICE_ID);
+
 #else
 	Status = UartPsInitialise(XUARTPS_BASEADDRESS);
 #endif
+
 	if (Status == XST_FAILURE) {
 		xil_printf("Unable to Initialise Uart\r\n");
+		return XST_FAILURE;
+	}
+
+#ifndef SDT
+    Status = XLlFifoInitialise(&FifoInstance, FIFO_DEV_ID);
+
+#else
+    Status = XLlFifoInitialise(&FifoInstance, XPAR_XLLFIFO_0_BASEADDR);
+#endif
+
+    if (Status == XST_FAILURE) {
+		xil_printf("Unable to Initialise AXIS Fifo\r\n");
 		return XST_FAILURE;
 	}
 
@@ -104,7 +119,7 @@ int main(void)
     UartReceiveData(ARecvBuffer, BRecvBuffer, &ABytesReceived, &BBytesReceived);
     
     parseData(ARecvBuffer, BRecvBuffer, ABytesReceived, BBytesReceived, SourceBuffer);
-    AXISTxSend(&FifoInstance, SourceBuffer, (A_SIZE + B_SIZE));
+    AXISTxSend(&FifoInstance, SourceBuffer);
     AXISRxReceive(&FifoInstance, DestinationBuffer);
     getMatrices(DestinationBuffer, A, B);
 }
@@ -218,12 +233,15 @@ void UartReceiveData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32* 
 
 void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, u32 SourceBuffer[A_SIZE + B_SIZE]) {
     int val = 0;
+    int idx = 0;
+
     for(u32 i = 0; i < ABytesReceived; i ++) {
         if(ARecvBuffer[i] == '\r') {
             continue;
         } else if(ARecvBuffer[i] == '\n' || ARecvBuffer[i] == ',') {
-            SourceBuffer[i] = val;
+            SourceBuffer[idx] = val;
             val = 0;
+            idx++;
         } else {
             int num = (int)(ARecvBuffer[i] & ~ASCII_MASK);
             val = val * 10 + num;
@@ -235,8 +253,9 @@ void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesR
         if(BRecvBuffer[j] == '\r') {
             continue;
         } else if(BRecvBuffer[j] == '\n' || BRecvBuffer[j] == ',') {
-            SourceBuffer[ABytesReceived + j] = val;
+            SourceBuffer[idx] = val;
             val = 0;
+            idx++;
         } else {
             int num = (int)(BRecvBuffer[j] & ~ASCII_MASK);
             val = val * 10 + num;
@@ -244,19 +263,19 @@ void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesR
     }
 }
 
-int AXISTxSend(XLlFifo *InstancePtr, u32 *SourceAddr, int transmitSize)
+int AXISTxSend(XLlFifo *InstancePtr, u32 SourceBuffer[A_SIZE + B_SIZE])
 {
 	xil_printf("Transmitting Data ... \r\n");
 
-	for(int i=0 ; i < transmitSize ; i++){
+	for(int i=0 ; i < (A_SIZE + B_SIZE) ; i++){
 		/* Writing into the FIFO Transmit Port Buffer */
         if( XLlFifo_iTxVacancy(InstancePtr) ){
-            XLlFifo_TxPutWord(InstancePtr, SourceAddr[i]);
+            XLlFifo_TxPutWord(InstancePtr, SourceBuffer[i]);
         }
 	}
 
 	/* Start Transmission by writing transmission length into the TLR */
-	XLlFifo_iTxSetLen(InstancePtr, transmitSize);
+	XLlFifo_iTxSetLen(InstancePtr, (A_SIZE + B_SIZE) * WORD_SIZE);
 
 	/* Check for Transmission completion */
 	while( !(XLlFifo_IsTxDone(InstancePtr)) ){
@@ -299,12 +318,14 @@ void getMatrices(u32 DestinationBuffer[A_SIZE + B_SIZE], u32 A[A_ROWS][A_COLS], 
     for(int i = 0; i < A_ROWS; i++) {
         for(int j = 0; j < A_COLS; j++) {
             A[i][j] = DestinationBuffer[i * A_COLS + j];
+            // xil_printf("%d\r\n", A[i][j]); // for checking matrices
         }
     }
 
     for(int i = 0; i < B_ROWS; i++) {
         for(int j = 0; j < B_COLS; j++) {
-            B[i][j] = DestinationBuffer[i * B_COLS + j];
+            B[i][j] = DestinationBuffer[A_SIZE + i * B_COLS + j];
+            // xil_printf("%d\r\n", B[i][j]); // for checking matrices
         }
     }
 }
