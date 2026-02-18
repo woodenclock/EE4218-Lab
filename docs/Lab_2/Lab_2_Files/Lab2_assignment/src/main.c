@@ -39,9 +39,6 @@
 
 // AXI stream constants
 #define WORD_SIZE 4			/* Size of words in bytes */
-#define MAX_PACKET_LEN 4
-#define NO_OF_PACKETS 64
-#define MAX_DATA_BUFFER_SIZE NO_OF_PACKETS*MAX_PACKET_LEN
 
 #ifndef SDT
 #define UART_DEVICE_ID                  XPAR_XUARTPS_0_DEVICE_ID
