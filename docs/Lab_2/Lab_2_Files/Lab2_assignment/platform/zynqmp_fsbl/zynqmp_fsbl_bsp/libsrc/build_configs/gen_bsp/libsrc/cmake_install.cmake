@@ -109,6 +109,11 @@ endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
+  include("C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/libsrc/build_configs/gen_bsp/libsrc/tmrctr/src/cmake_install.cmake")
+endif()
+
+if(NOT CMAKE_INSTALL_LOCAL_ONLY)
+  # Include the install script for the subdirectory.
   include("C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/libsrc/build_configs/gen_bsp/libsrc/ttcps/src/cmake_install.cmake")
 endif()
 

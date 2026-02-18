@@ -16,4 +16,7 @@ set_property KEEP_HIERARCHY SOFT [get_cells -hier -filter {REF_NAME==design_1_ax
 # IP: bd/design_1/ip/design_1_rst_ps8_0_99M_0/design_1_rst_ps8_0_99M_0.xci
 set_property KEEP_HIERARCHY SOFT [get_cells -hier -filter {REF_NAME==design_1_rst_ps8_0_99M_0 || ORIG_REF_NAME==design_1_rst_ps8_0_99M_0} -quiet] -quiet
 
-# XDC: c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/design_1_ooc.xdc
+# IP: bd/design_1/ip/design_1_axi_timer_0_0/design_1_axi_timer_0_0.xci
+set_property KEEP_HIERARCHY SOFT [get_cells -hier -filter {REF_NAME==design_1_axi_timer_0_0 || ORIG_REF_NAME==design_1_axi_timer_0_0} -quiet] -quiet
+
+# XDC: c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/design_1_ooc.xdc

@@ -3,7 +3,7 @@
   "type": "PLATFORM",
   "configuration": {
     "description": "",
-    "xsa": "C:/Users/ELVIS/EE4218-Lab/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/design_1_wrapper.xsa",
+    "xsa": "C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/design_1_wrapper.xsa",
     "xsaPathInPlatform": "platform/hw/design_1_wrapper.xsa",
     "emulationXsa": "",
     "emulationXsaPathInPlatform": "",
