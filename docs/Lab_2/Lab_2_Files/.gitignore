@@ -23,6 +23,7 @@ _ide/.wsdata
 
 #Ignore imported examples
 /xuartps_hello_world_example
+/xllfifo_polling_example
 
 /_ide
 _ide/
