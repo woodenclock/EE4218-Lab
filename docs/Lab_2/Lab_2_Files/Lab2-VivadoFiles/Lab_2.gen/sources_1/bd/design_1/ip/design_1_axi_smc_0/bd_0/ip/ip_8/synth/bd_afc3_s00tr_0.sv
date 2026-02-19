@@ -52,7 +52,7 @@
 
 (* X_CORE_INFO = "sc_transaction_regulator_v1_0_12_top,Vivado 2025.2" *)
 (* CHECK_LICENSE_TYPE = "bd_afc3_s00tr_0,sc_transaction_regulator_v1_0_12_top,{}" *)
-(* CORE_GENERATION_INFO = "bd_afc3_s00tr_0,sc_transaction_regulator_v1_0_12_top,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_transaction_regulator,x_ipVersion=1.0,x_ipCoreRevision=12,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynquplus,C_IS_CASCADED=0,C_ENABLE_PIPELINING=0x1,C_NUM_READ_THREADS=4,C_NUM_WRITE_THREADS=4,C_MEP_IDENTIFIER_WIDTH=1,C_MEP_IDENTIFIER=1,C_SEP_ROUTE_WIDTH=1,C_RDATA_WIDTH=32,C_WDATA_WIDTH=32,C_S_ID_WIDTH=16,C_M_ID_WIDTH=3,C_ADDR_WIDTH=40,C_SUPPORTS_READ_DEADLOC\
+(* CORE_GENERATION_INFO = "bd_afc3_s00tr_0,sc_transaction_regulator_v1_0_12_top,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=sc_transaction_regulator,x_ipVersion=1.0,x_ipCoreRevision=12,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynquplus,C_IS_CASCADED=0,C_ENABLE_PIPELINING=0x1,C_NUM_READ_THREADS=4,C_NUM_WRITE_THREADS=4,C_MEP_IDENTIFIER_WIDTH=1,C_MEP_IDENTIFIER=1,C_SEP_ROUTE_WIDTH=2,C_RDATA_WIDTH=32,C_WDATA_WIDTH=32,C_S_ID_WIDTH=16,C_M_ID_WIDTH=3,C_ADDR_WIDTH=40,C_SUPPORTS_READ_DEADLOC\
 K=1,C_SUPPORTS_WRITE_DEADLOCK=1,C_READ_ACCEPTANCE=32,C_WRITE_ACCEPTANCE=32,C_NUM_READ_OUTSTANDING=8,C_NUM_WRITE_OUTSTANDING=8,C_SINGLE_ISSUING=0}" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module bd_afc3_s00tr_0 (
@@ -335,7 +335,7 @@ output wire m_axi_rready;
     .C_NUM_WRITE_THREADS(4),
     .C_MEP_IDENTIFIER_WIDTH(1),
     .C_MEP_IDENTIFIER(1),
-    .C_SEP_ROUTE_WIDTH(1),
+    .C_SEP_ROUTE_WIDTH(2),
     .C_RDATA_WIDTH(32),
     .C_WDATA_WIDTH(32),
     .C_S_ID_WIDTH(16),

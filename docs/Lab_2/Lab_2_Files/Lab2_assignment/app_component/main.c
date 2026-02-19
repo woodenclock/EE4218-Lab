@@ -12,6 +12,9 @@
 #include "xparameters.h"
 #include "xuartps.h"
 #include "xil_printf.h"
+#include "xllfifo.h"
+#include "xllfifo_hw.h"
+
 #include <stdbool.h>
 #include "matrix.h"
 
@@ -29,14 +32,27 @@
 
 #define MAX_A_CSV                       (A_ROWS * A_COLS * 4)
 #define MAX_B_CSV                       (B_ROWS * B_COLS * 4)
+#define NUM_WORDS                       (A_ROWS*A_COLS + B_ROWS*B_COLS)   // 64*8 + 8 = 520
 
 #define ASCII_MASK                      0x30
 
 #ifndef SDT
 #define UART_DEVICE_ID                  XPAR_XUARTPS_0_DEVICE_ID
 #else
-#define	XUARTPS_BASEADDRESS		XPAR_XUARTPS_0_BASEADDR
+#define	XUARTPS_BASEADDRESS		        XPAR_XUARTPS_0_BASEADDR
 #endif
+
+static XLlFifo Fifo;
+
+static int A[A_ROWS][A_COLS];
+static int B[B_ROWS][B_COLS];
+static int RES[A_ROWS][B_COLS];
+
+static u32 TxWords[NUM_WORDS];
+static u32 RxWords[NUM_WORDS];
+
+static u8 ARecvBuffer[MAX_A_CSV];
+static u8 BRecvBuffer[MAX_B_CSV];
 
 /************************** Function Prototypes ******************************/
 
@@ -53,12 +69,116 @@ void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesR
 XUartPs Uart_Ps;		/* The instance of the UART Driver */
 
 /*****************************************************************************/
+
+static int FifoInit(void)
+{
+    // xil_printf("Entering FifoInit\r\n");
+
+#ifdef SDT
+    XLlFifo_Config *Cfg = XLlFfio_LookupConfig(XPAR_XLLFIFO_0_BASEADDR);
+#else
+    XLlFifo_Config *Cfg = XLlFfio_LookupConfig(XPAR_XLLFIFO_0_DEVICE_ID);
+#endif
+    if (!Cfg) {
+        xil_printf("XLlFifo lookup failed\r\n");
+        return XST_FAILURE;
+    }
+
+    int Status = XLlFifo_CfgInitialize(&Fifo, Cfg, Cfg->BaseAddress);
+    if (Status != XST_SUCCESS) {
+        xil_printf("XLlFifo_CfgInitialize failed: %d\r\n", Status);
+        return XST_FAILURE;
+    }
+
+    XLlFifo_Reset(&Fifo);
+    XLlFifo_IntClear(&Fifo, 0xFFFFFFFF);
+
+    // xil_printf("FifoInit: Base=0x%08lx Axi4Base=0x%08lx DataIf=%lu TxVac=%lu RxOcc=%lu\r\n",
+    //     (u32)Fifo.BaseAddress,
+    //     (u32)Fifo.Axi4BaseAddress,
+    //     (u32)Fifo.Datainterface,
+    //     (u32)XLlFifo_iTxVacancy(&Fifo),
+    //     (u32)XLlFifo_iRxOccupancy(&Fifo)
+    // );
+
+    return XST_SUCCESS;
+}
+
+static void PackAB(const int A[A_ROWS][A_COLS],
+                   const int B[B_ROWS][B_COLS],
+                   u32 tx[NUM_WORDS])
+{
+    int idx = 0;
+
+    for (int i = 0; i < A_ROWS; i++) {
+        for (int k = 0; k < A_COLS; k++) {
+            tx[idx++] = (u32)A[i][k];   // 1 value per 32-bit word (simple + safe)
+        }
+    }
+
+    for (int k = 0; k < B_ROWS; k++) {
+        tx[idx++] = (u32)B[k][0];
+    }
+}
+
+static void UnpackAB(const u32 rx[NUM_WORDS],
+                     int A[A_ROWS][A_COLS],
+                     int B[B_ROWS][B_COLS])
+{
+    int idx = 0;
+
+    for (int i = 0; i < A_ROWS; i++) {
+        for (int k = 0; k < A_COLS; k++) {
+            A[i][k] = (int)rx[idx++];
+        }
+    }
+
+    for (int k = 0; k < B_ROWS; k++) {
+        B[k][0] = (int)rx[idx++];
+    }
+}
+
+static int FifoSendRecvFrame(const u32 *tx, u32 *rx, int nwords)
+{
+    // write nwords
+    for (int i = 0; i < nwords; i++) {
+        while (XLlFifo_iTxVacancy(&Fifo) == 0) { }
+        XLlFifo_TxPutWord(&Fifo, tx[i]);
+    }
+
+    XLlFifo_iTxSetLen(&Fifo, (u32)(nwords * 4));
+
+    // read back exactly nwords as they arrive
+    int got = 0;
+    while (got < nwords) {
+        u32 occ = XLlFifo_iRxOccupancy(&Fifo);
+        while (occ-- && got < nwords) {
+            rx[got++] = XLlFifo_RxGetWord(&Fifo);
+        }
+    }
+    return XST_SUCCESS;
+}
+
+static int FifoLoopbackChunked(const u32 *tx, u32 *rx, int total_words)
+{
+    const int CHUNK = 256; // safe (<=512 even if RX depth is 512)
+    int offset = 0;
+
+    while (offset < total_words) {
+        int n = total_words - offset;
+        if (n > CHUNK) n = CHUNK;
+
+        int st = FifoSendRecvFrame(tx + offset, rx + offset, n);
+        if (st != XST_SUCCESS) return st;
+
+        offset += n;
+    }
+    return XST_SUCCESS;
+}
+
 int main(void)
 {
 	int Status;
-    int A[A_ROWS][A_COLS];
-    int B[B_ROWS][B_COLS];
-    int RES[A_ROWS][B_COLS];
 
 #ifndef SDT
 	Status = UartPsInitialise(UART_DEVICE_ID);
@@ -72,6 +192,35 @@ int main(void)
 
     xil_printf("Start Receiving Data\r\n");
     UartReceiveData(A, B);
+    // xil_printf("After UartReceiveData\r\n");
+
+
+    // --- FIFO loopback stage (required by Lab 2) ---
+    if (FifoInit() != XST_SUCCESS) {
+        xil_printf("FIFO init failed\r\n");
+        return XST_FAILURE;
+    }
+
+    // xil_printf("After FifoInit\r\n");
+
+    PackAB(A, B, TxWords);
+    // xil_printf("After PackAB\r\n");
+    
+    // xil_printf("About to do FIFO loopback...\r\n");
+    int ok = FifoLoopbackChunked(TxWords, RxWords, NUM_WORDS);
+    // xil_printf("FIFO loopback returned %d\r\n", ok);
+
+    // for (int i = 0; i < 8; i++) {
+    //     xil_printf("RxWords[%d]=%lu\r\n", i, (u32)RxWords[i]);
+    // }
+
+    if (ok != XST_SUCCESS) {
+        xil_printf("FIFO loopback failed\r\n");
+        return XST_FAILURE;
+    }
+
+    // Overwrite A,B with what came back from FIFO
+    UnpackAB(RxWords, A, B);
 
     // compute RES = A*B/256
     MatMulDiv256(A, B, RES);
@@ -82,7 +231,6 @@ int main(void)
     while (1) { }
 }
 
-/*****************************************************************************/
 #ifndef SDT
 int UartPsInitialise(u16 DeviceId)
 #else
@@ -112,8 +260,6 @@ int UartPsInitialise(UINTPTR BaseAddress)
 void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
     bool matrixAReady = false;
     bool matrixBReady = false;
-    u8 ARecvBuffer[MAX_A_CSV];
-    u8 BRecvBuffer[MAX_B_CSV];
     u32 ABytesReceived = 0;
     u8 numRowsReceived = 0;
     xil_printf("Ready to receive A.csv\r\n");
@@ -149,7 +295,45 @@ void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
     parseData(ARecvBuffer, BRecvBuffer, ABytesReceived, BBytesReceived, A, B);
 }
 
-void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
+static void parseOneCsvMatrix(
+    const u8 *buf, u32 n,
+    int rows, int cols,
+    int out[rows][cols])
+{
+    int r = 0, c = 0;
+    int val = 0;
+    bool in_num = false;
+
+    for (u32 i = 0; i < n; i++) {
+        u8 ch = buf[i];
+        if (ch == '\r') continue;
+
+        if (ch >= '0' && ch <= '9') {
+            val = val * 10 + (ch - '0');
+            in_num = true;
+            continue;
+        }
+
+        if (ch == ',' || ch == '\n') {
+            if (in_num) {
+                if (r < rows && c < cols) out[r][c] = val;
+                c++;
+                if (ch == '\n') { r++; c = 0; }
+            }
+            val = 0;
+            in_num = false;
+            continue;
+        }
+    }
+}
+
+void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], 
+               u32 ABytesReceived, u32 BBytesReceived, 
+               int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS])
+{
+    parseOneCsvMatrix(ARecvBuffer, ABytesReceived, A_ROWS, A_COLS, A);
+    parseOneCsvMatrix(BRecvBuffer, BBytesReceived, B_ROWS, B_COLS, B);
+    
     int row = 0;
     int col = 0;
     int val = 0;

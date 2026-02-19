@@ -25,7 +25,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.runs/impl_1'
+HD_PWD='C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.runs/impl_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log
@@ -42,7 +42,7 @@ EAStep()
 }
 
 # pre-commands:
-/bin/touch .init_design.begin.rst
+/bin/touch .write_bitstream.begin.rst
 EAStep vivado -log design_1_wrapper.vdi -applog -m64 -product Vivado -messageDb vivado.pb -mode batch -source design_1_wrapper.tcl -notrace
 
 

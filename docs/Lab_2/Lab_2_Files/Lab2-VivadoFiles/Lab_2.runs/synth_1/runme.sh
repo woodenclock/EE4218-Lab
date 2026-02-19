@@ -25,7 +25,7 @@ else
 fi
 export LD_LIBRARY_PATH
 
-HD_PWD='C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.runs/synth_1'
+HD_PWD='C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.runs/synth_1'
 cd "$HD_PWD"
 
 HD_LOG=runme.log

@@ -2,11 +2,11 @@
 <Root MajorVersion="0" MinorVersion="43">
   <CompositeFile CompositeFileTopName="bd_afc3" CanBeSetAsTop="true" CanDisplayChildGraph="true">
     <Description>Composite Fileset</Description>
-    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1771266889"/>
-    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1771266889"/>
-    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1771266889"/>
-    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1771266889"/>
-    <Generation Name="INSTANTIATION_TEMPLATE" State="STALE" Timestamp="1771260708"/>
+    <Generation Name="SYNTHESIS" State="GENERATED" Timestamp="1771516305"/>
+    <Generation Name="SIMULATION" State="GENERATED" Timestamp="1771516305"/>
+    <Generation Name="IMPLEMENTATION" State="GENERATED" Timestamp="1771516305"/>
+    <Generation Name="HW_HANDOFF" State="GENERATED" Timestamp="1771516305"/>
+    <Generation Name="INSTANTIATION_TEMPLATE" State="STALE" Timestamp="1771516288"/>
     <FileCollection Name="SOURCES" Type="SOURCES">
       <File Name="synth\bd_afc3.v" Type="Verilog">
         <Properties IsEditable="false" IsVisible="true" IsNetlistSimulation="false" Timestamp="0" IsTrackable="false" IsStatusTracked="false"/>

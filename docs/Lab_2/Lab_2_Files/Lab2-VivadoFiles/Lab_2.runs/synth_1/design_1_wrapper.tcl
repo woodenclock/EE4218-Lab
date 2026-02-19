@@ -4,7 +4,7 @@
 
 set TIME_start [clock seconds] 
 namespace eval ::optrace {
-  variable script "C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.runs/synth_1/design_1_wrapper.tcl"
+  variable script "C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.runs/synth_1/design_1_wrapper.tcl"
   variable category "vivado_synth"
 }
 
@@ -56,7 +56,13 @@ if {$::dispatch::connected} {
 }
 
 OPTRACE "synth_1" START { ROLLUP_AUTO }
+set_param power.BramSDPPropagationFix 1
 set_param general.usePosixSpawnForFork 1
+set_param chipscope.maxJobs 5
+set_param physdb.placeDBImplUsesPlaceStorage 0
+set_param power.enableUnconnectedCarry8PinPower 1
+set_param power.enableCarry8RouteBelPower 1
+set_param power.enableLutRouteBelPower 1
 OPTRACE "Creating in-memory project" START { }
 create_project -in_memory -part xck26-sfvc784-2LV-c
 
@@ -64,50 +70,57 @@ set_param project.singleFileAddWarning.threshold 0
 set_param project.compositeFile.enableAutoGeneration 0
 set_param synth.vivado.isSynthRun true
 set_msg_config -source 4 -id {IP_Flow 19-2162} -severity warning -new_severity info
-set_property webtalk.parent_dir {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.cache/wt} [current_project]
-set_property parent.project_path {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.xpr} [current_project]
+set_property webtalk.parent_dir C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.cache/wt [current_project]
+set_property parent.project_path C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.xpr [current_project]
 set_property XPM_LIBRARIES {XPM_CDC XPM_FIFO XPM_MEMORY} [current_project]
 set_property default_lib xil_defaultlib [current_project]
 set_property target_language Verilog [current_project]
 set_property board_part xilinx.com:kv260_som:part0:1.4 [current_project]
-set_property ip_output_repo {c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.cache/ip} [current_project]
+set_property ip_output_repo c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.cache/ip [current_project]
 set_property ip_cache_permissions {read write} [current_project]
 OPTRACE "Creating in-memory project" END { }
 OPTRACE "Adding files" START { }
-read_verilog -library xil_defaultlib {{C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/hdl/design_1_wrapper.v}}
-add_files {{C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.srcs/sources_1/bd/design_1/design_1.bd}}
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_zynq_ultra_ps_e_0_0/design_1_zynq_ultra_ps_e_0_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_zynq_ultra_ps_e_0_0/design_1_zynq_ultra_ps_e_0_0.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_fifo_mm_s_0_0/design_1_axi_fifo_mm_s_0_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_1/bd_afc3_psr_aclk_0_board.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_2/bd_afc3_arsw_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_3/bd_afc3_rsw_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_4/bd_afc3_awsw_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_5/bd_afc3_wsw_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_6/bd_afc3_bsw_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_10/bd_afc3_s00a2s_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_11/bd_afc3_sarn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_12/bd_afc3_srn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_13/bd_afc3_sawn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_14/bd_afc3_swn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_15/bd_afc3_sbn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_16/bd_afc3_m00s2a_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_17/bd_afc3_m00arn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_18/bd_afc3_m00rn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_19/bd_afc3_m00awn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_20/bd_afc3_m00wn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_21/bd_afc3_m00bn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_23/bd_afc3_m01s2a_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_24/bd_afc3_m01arn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_25/bd_afc3_m01rn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_26/bd_afc3_m01awn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_27/bd_afc3_m01wn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_28/bd_afc3_m01bn_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/smartconnect.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_rst_ps8_0_99M_0/design_1_rst_ps8_0_99M_0_board.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/ip/design_1_rst_ps8_0_99M_0/design_1_rst_ps8_0_99M_0_ooc.xdc}}]
-set_property used_in_implementation false [get_files -all {{c:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.gen/sources_1/bd/design_1/design_1_ooc.xdc}}]
+read_verilog -library xil_defaultlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/hdl/design_1_wrapper.v
+add_files C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/sources_1/bd/design_1/design_1.bd
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_zynq_ultra_ps_e_0_0/design_1_zynq_ultra_ps_e_0_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_zynq_ultra_ps_e_0_0/design_1_zynq_ultra_ps_e_0_0.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_1/bd_afc3_psr_aclk_0_board.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_2/bd_afc3_arsw_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_3/bd_afc3_rsw_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_4/bd_afc3_awsw_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_5/bd_afc3_wsw_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_6/bd_afc3_bsw_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_10/bd_afc3_s00a2s_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_11/bd_afc3_sarn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_12/bd_afc3_srn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_13/bd_afc3_sawn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_14/bd_afc3_swn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_15/bd_afc3_sbn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_16/bd_afc3_m00s2a_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_17/bd_afc3_m00arn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_18/bd_afc3_m00rn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_19/bd_afc3_m00awn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_20/bd_afc3_m00wn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_21/bd_afc3_m00bn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_23/bd_afc3_m01s2a_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_24/bd_afc3_m01arn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_25/bd_afc3_m01rn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_26/bd_afc3_m01awn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_27/bd_afc3_m01wn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_28/bd_afc3_m01bn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_30/bd_afc3_m02s2a_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_31/bd_afc3_m02arn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_32/bd_afc3_m02rn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_33/bd_afc3_m02awn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_34/bd_afc3_m02wn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/bd_0/ip/ip_35/bd_afc3_m02bn_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_smc_0/smartconnect.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_rst_ps8_0_99M_0/design_1_rst_ps8_0_99M_0_board.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_rst_ps8_0_99M_0/design_1_rst_ps8_0_99M_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_timer_0_0/design_1_axi_timer_0_0_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_fifo_mm_s_0_1/design_1_axi_fifo_mm_s_0_1_ooc.xdc]
+set_property used_in_implementation false [get_files -all c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/design_1_ooc.xdc]
 
 OPTRACE "Adding files" END { }
 # Mark all dcp files as not used in implementation to prevent them from being
@@ -122,7 +135,7 @@ read_xdc dont_touch.xdc
 set_property used_in_implementation false [get_files dont_touch.xdc]
 set_param ips.enableIPCacheLiteLoad 1
 
-read_checkpoint -auto_incremental -incremental {C:/Users/ELVIS/OneDrive - National University of Singapore/A. NUS/EE4218/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab-2-Files/Lab_2.srcs/utils_1/imports/synth_1/design_1_wrapper.dcp}
+read_checkpoint -auto_incremental -incremental C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/utils_1/imports/synth_1/design_1_wrapper.dcp
 close [open __synthesis_is_running__ w]
 
 OPTRACE "synth_design" START { }

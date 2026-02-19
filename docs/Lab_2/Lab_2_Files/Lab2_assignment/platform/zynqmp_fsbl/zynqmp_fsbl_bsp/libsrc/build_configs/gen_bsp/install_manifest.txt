@@ -115,6 +115,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h
@@ -241,6 +244,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h
@@ -367,6 +373,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h
@@ -493,6 +502,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h
@@ -619,6 +631,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h
@@ -745,6 +760,9 @@ C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xsysmonpsu_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtimer_config.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_i.h
+C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xtmrctr_l.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xttcps_hw.h
 C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/zynqmp_fsbl_bsp/include/../include/xuartps.h

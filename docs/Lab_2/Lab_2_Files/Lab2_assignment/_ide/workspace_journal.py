@@ -29,3 +29,167 @@ status = platform.build()
 
 comp.build()
 
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+domain = platform.get_domain(name="standalone_psu_cortexa53_0")
+
+status = domain.regenerate()
+
+status = platform.build()
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.update_hw(hw_design = "$COMPONENT_LOCATION/../../Lab2-VivadoFiles/design_1_wrapper.xsa")
+
+status = platform.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+
+status = platform.build()
+
+comp.build()
+

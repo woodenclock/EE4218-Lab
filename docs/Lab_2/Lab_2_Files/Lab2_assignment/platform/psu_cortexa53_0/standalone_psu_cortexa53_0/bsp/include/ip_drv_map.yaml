@@ -1,6 +1,9 @@
 axi_fifo_mm_s_0:
 - axi_fifo_mm_s
 - llfifo
+axi_timer_0:
+- axi_timer
+- tmrctr
 psu_acpu_gic:
 - psu_acpu_gic
 - scugic
