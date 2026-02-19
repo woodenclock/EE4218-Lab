@@ -238,8 +238,8 @@ CMAKE_STATIC_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 //Path to a program.
 CMAKE_STRIP:FILEPATH=C:/AMDDesignTools/2025.2/Vitis/gnu/aarch64/nt/aarch64-none/bin/aarch64-none-elf-strip.exe
 
-//No help, variable specified on the command line.
-CMAKE_TOOLCHAIN_FILE:UNINITIALIZED=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/cortexa53_toolchain.cmake
+//The CMake toolchain file
+CMAKE_TOOLCHAIN_FILE:FILEPATH=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/cortexa53_toolchain.cmake
 
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
@@ -505,15 +505,6 @@ sysmonpsu_IS_TOP_LEVEL:STATIC=OFF
 sysmonpsu_SOURCE_DIR:STATIC=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/sysmonpsu/src
 
 //Value Computed by CMake
-tmrctr_BINARY_DIR:STATIC=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/tmrctr/src
-
-//Value Computed by CMake
-tmrctr_IS_TOP_LEVEL:STATIC=OFF
-
-//Value Computed by CMake
-tmrctr_SOURCE_DIR:STATIC=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/tmrctr/src
-
-//Value Computed by CMake
 ttcps_BINARY_DIR:STATIC=C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/ttcps/src
 
 //Value Computed by CMake
@@ -677,7 +668,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=40
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=39
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
@@ -719,9 +710,9 @@ CMAKE_STRIP-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //STRINGS property for variable: XILTIMER_sleep_timer
-XILTIMER_sleep_timer-STRINGS:INTERNAL=Default;axi_timer_0;psu_ttc_9;psu_ttc_6;psu_ttc_3;psu_ttc_0
+XILTIMER_sleep_timer-STRINGS:INTERNAL=Default;psu_ttc_9;psu_ttc_6;psu_ttc_3;psu_ttc_0
 //STRINGS property for variable: XILTIMER_tick_timer
-XILTIMER_tick_timer-STRINGS:INTERNAL=None;axi_timer_0;psu_ttc_9;psu_ttc_6;psu_ttc_3;psu_ttc_0
+XILTIMER_tick_timer-STRINGS:INTERNAL=None;psu_ttc_9;psu_ttc_6;psu_ttc_3;psu_ttc_0
 //STRINGS property for variable: standalone_enable_sw_intrusive_profiling
 standalone_enable_sw_intrusive_profiling-STRINGS:INTERNAL=None
 //STRINGS property for variable: standalone_microblaze_exceptions

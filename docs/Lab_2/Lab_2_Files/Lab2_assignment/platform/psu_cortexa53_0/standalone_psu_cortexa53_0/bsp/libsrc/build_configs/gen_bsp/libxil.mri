@@ -3,7 +3,6 @@ addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/wdtps/src/libwdtps.a
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/uartps/src/libuartps.a
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/ttcps/src/libttcps.a
-addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/tmrctr/src/libtmrctr.a
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/sysmonpsu/src/libsysmonpsu.a
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/scugic/src/libscugic.a
 addlib C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/psu_cortexa53_0/standalone_psu_cortexa53_0/bsp/libsrc/build_configs/gen_bsp/libsrc/rtcpsu/src/librtcpsu.a

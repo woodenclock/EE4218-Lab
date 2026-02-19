@@ -442,20 +442,6 @@
 #define XPAR_XSYSMONPSU_0_COMPATIBLE "xlnx,zynqmp-ams"
 #define XPAR_XSYSMONPSU_0_CLOCK_FREQ 0x31
 
-#define XPAR_XTMRCTR_NUM_INSTANCES 1
-
-/* Definitions for peripheral AXI_TIMER_0 */
-#define XPAR_AXI_TIMER_0_COMPATIBLE "xlnx,axi-timer-2.0"
-#define XPAR_AXI_TIMER_0_BASEADDR 0xa0020000
-#define XPAR_AXI_TIMER_0_HIGHADDR 0xa002ffff
-#define XPAR_AXI_TIMER_0_CLOCK_FREQUENCY 0x5f5dd19
-
-/* Canonical definitions for peripheral AXI_TIMER_0 */
-#define XPAR_XTMRCTR_0_BASEADDR 0xa0020000
-#define XPAR_XTMRCTR_0_HIGHADDR 0xa002ffff
-#define XPAR_XTMRCTR_0_COMPATIBLE "xlnx,axi-timer-2.0"
-#define XPAR_XTMRCTR_0_CLOCK_FREQUENCY 0x5f5dd19
-
 #define XPAR_XTTCPS_NUM_INSTANCES 12
 
 /* Definitions for peripheral TTC0 */
