@@ -1301,7 +1301,12 @@
         "xci_name": "design_1_axi_timer_0_0",
         "xci_path": "ip\\design_1_axi_timer_0_0\\design_1_axi_timer_0_0.xci",
         "inst_hier_path": "axi_timer_0",
-        "has_run_ip_tcl": "true"
+        "has_run_ip_tcl": "true",
+        "parameters": {
+          "enable_timer2": {
+            "value": "0"
+          }
+        }
       },
       "axi_fifo_mm_s_0": {
         "vlnv": "xilinx.com:ip:axi_fifo_mm_s:4.3",

@@ -11,6 +11,7 @@
 
 #include "xparameters.h"
 #include "xuartps.h"
+
 #include "xil_printf.h"
 #include "xllfifo.h"
 #include "xllfifo_hw.h"
@@ -57,12 +58,15 @@ static u8 BRecvBuffer[MAX_B_CSV];
 /************************** Function Prototypes ******************************/
 
 #ifndef SDT
-int UartPsInitialise(u16 DeviceId);
+    int UartPsInitialise(u16 DeviceId);
 #else
-int UartPsInitialise(UINTPTR BaseAddress);
+    int UartPsInitialise(UINTPTR BaseAddress);
 #endif
+
 void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]);
-void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], u32 ABytesReceived, u32 BBytesReceived, int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]);
+void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], 
+               u32 ABytesReceived, u32 BBytesReceived,
+               int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]);
 
 /************************** Variable Definitions *****************************/
 
@@ -92,51 +96,10 @@ static int FifoInit(void)
 
     XLlFifo_Reset(&Fifo);
     XLlFifo_IntClear(&Fifo, 0xFFFFFFFF);
-
-    // xil_printf("FifoInit: Base=0x%08lx Axi4Base=0x%08lx DataIf=%lu TxVac=%lu RxOcc=%lu\r\n",
-    //     (u32)Fifo.BaseAddress,
-    //     (u32)Fifo.Axi4BaseAddress,
-    //     (u32)Fifo.Datainterface,
-    //     (u32)XLlFifo_iTxVacancy(&Fifo),
-    //     (u32)XLlFifo_iRxOccupancy(&Fifo)
-    // );
-
+    
     return XST_SUCCESS;
 }
 
-static void PackAB(const int A[A_ROWS][A_COLS],
-                   const int B[B_ROWS][B_COLS],
-                   u32 tx[NUM_WORDS])
-{
-    int idx = 0;
-
-    for (int i = 0; i < A_ROWS; i++) {
-        for (int k = 0; k < A_COLS; k++) {
-            tx[idx++] = (u32)A[i][k];   // 1 value per 32-bit word (simple + safe)
-        }
-    }
-
-    for (int k = 0; k < B_ROWS; k++) {
-        tx[idx++] = (u32)B[k][0];
-    }
-}
-
-static void UnpackAB(const u32 rx[NUM_WORDS],
-                     int A[A_ROWS][A_COLS],
-                     int B[B_ROWS][B_COLS])
-{
-    int idx = 0;
-
-    for (int i = 0; i < A_ROWS; i++) {
-        for (int k = 0; k < A_COLS; k++) {
-            A[i][k] = (int)rx[idx++];
-        }
-    }
-
-    for (int k = 0; k < B_ROWS; k++) {
-        B[k][0] = (int)rx[idx++];
-    }
-}
 
 static int FifoSendRecvFrame(const u32 *tx, u32 *rx, int nwords)
 {
@@ -159,6 +122,7 @@ static int FifoSendRecvFrame(const u32 *tx, u32 *rx, int nwords)
     return XST_SUCCESS;
 }
 
+
 static int FifoLoopbackChunked(const u32 *tx, u32 *rx, int total_words)
 {
     const int CHUNK = 256; // safe (<=512 even if RX depth is 512)
@@ -176,6 +140,42 @@ static int FifoLoopbackChunked(const u32 *tx, u32 *rx, int total_words)
     return XST_SUCCESS;
 }
 
+
+static void PackAB(const int A[A_ROWS][A_COLS],const int B[B_ROWS][B_COLS], u32 tx[NUM_WORDS])
+{
+    int idx = 0;
+
+    for (int i = 0; i < A_ROWS; i++) {
+        for (int k = 0; k < A_COLS; k++) {
+            tx[idx++] = (u32)A[i][k];   // 1 value per 32-bit word (simple + safe)
+        }
+    }
+
+    for (int k = 0; k < B_ROWS; k++) {
+        tx[idx++] = (u32)B[k][0];
+    }
+}
+
+
+static void UnpackAB(const u32 rx[NUM_WORDS], int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS])
+{
+    int idx = 0;
+
+    for (int i = 0; i < A_ROWS; i++) {
+        for (int k = 0; k < A_COLS; k++) {
+            A[i][k] = (int)rx[idx++];
+        }
+    }
+
+    for (int k = 0; k < B_ROWS; k++) {
+        B[k][0] = (int)rx[idx++];
+    }
+}
+
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 int main(void)
 {
 	int Status;
@@ -190,31 +190,17 @@ int main(void)
 		return XST_FAILURE;
 	}
 
-    xil_printf("Start Receiving Data\r\n");
     UartReceiveData(A, B);
-    // xil_printf("After UartReceiveData\r\n");
 
-
-    // --- FIFO loopback stage (required by Lab 2) ---
+    // --- FIFO loopback stage (Only for Lab 2) ---
     if (FifoInit() != XST_SUCCESS) {
         xil_printf("FIFO init failed\r\n");
         return XST_FAILURE;
     }
 
-    // xil_printf("After FifoInit\r\n");
-
     PackAB(A, B, TxWords);
-    // xil_printf("After PackAB\r\n");
-    
-    // xil_printf("About to do FIFO loopback...\r\n");
-    int ok = FifoLoopbackChunked(TxWords, RxWords, NUM_WORDS);
-    // xil_printf("FIFO loopback returned %d\r\n", ok);
 
-    // for (int i = 0; i < 8; i++) {
-    //     xil_printf("RxWords[%d]=%lu\r\n", i, (u32)RxWords[i]);
-    // }
-
-    if (ok != XST_SUCCESS) {
+    if (FifoLoopbackChunked(TxWords, RxWords, NUM_WORDS) != XST_SUCCESS) {
         xil_printf("FIFO loopback failed\r\n");
         return XST_FAILURE;
     }
@@ -223,28 +209,33 @@ int main(void)
     UnpackAB(RxWords, A, B);
 
     // compute RES = A*B/256
-    MatMulDiv256(A, B, RES);
+    MatMulDiv256(A, B, RES);    
 
     // send RES back to PC as CSV (1 value per line)
     PrintResCsv(RES);
 
-    while (1) { }
+    while (1);
 }
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
 
 #ifndef SDT
-int UartPsInitialise(u16 DeviceId)
+    int UartPsInitialise(u16 DeviceId)
 #else
-int UartPsInitialise(UINTPTR BaseAddress)
+    int UartPsInitialise(UINTPTR BaseAddress)
 #endif
 {
     int Status;
 	XUartPs_Config *Config;
-#ifndef SDT
-	Config = XUartPs_LookupConfig(DeviceId);
-#else
-	Config = XUartPs_LookupConfig(BaseAddress);
-#endif
-	if (NULL == Config) {
+    #ifndef SDT
+	    Config = XUartPs_LookupConfig(DeviceId);
+    #else
+	    Config = XUartPs_LookupConfig(BaseAddress);
+    #endif
+	
+    if (NULL == Config) {
 		return XST_FAILURE;
 	}
 
@@ -257,7 +248,9 @@ int UartPsInitialise(UINTPTR BaseAddress)
     return Status;
 }
 
-void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
+
+void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) 
+{
     bool matrixAReady = false;
     bool matrixBReady = false;
     u32 ABytesReceived = 0;
@@ -295,10 +288,8 @@ void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS]) {
     parseData(ARecvBuffer, BRecvBuffer, ABytesReceived, BBytesReceived, A, B);
 }
 
-static void parseOneCsvMatrix(
-    const u8 *buf, u32 n,
-    int rows, int cols,
-    int out[rows][cols])
+
+static void parseOneCsvMatrix(const u8 *buf, u32 n, int rows, int cols, int out[rows][cols])
 {
     int r = 0, c = 0;
     int val = 0;
@@ -325,7 +316,13 @@ static void parseOneCsvMatrix(
             continue;
         }
     }
+
+    // Flush
+    if (in_num && r < rows && c < cols) {
+        out[r][c] = val;
+    }
 }
+
 
 void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV], 
                u32 ABytesReceived, u32 BBytesReceived, 
@@ -333,46 +330,4 @@ void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV],
 {
     parseOneCsvMatrix(ARecvBuffer, ABytesReceived, A_ROWS, A_COLS, A);
     parseOneCsvMatrix(BRecvBuffer, BBytesReceived, B_ROWS, B_COLS, B);
-    
-    int row = 0;
-    int col = 0;
-    int val = 0;
-    for(u32 i = 0; i < ABytesReceived; i ++) {
-        if(ARecvBuffer[i] == '\r') {
-            continue;
-        } else if(ARecvBuffer[i] == '\n') {
-            A[row][col] = val;
-            row++;
-            col = 0;
-            val = 0;
-        } else if(ARecvBuffer[i] == ',') {
-            A[row][col] = val;
-            col++;
-            val = 0;
-        } else {
-            int num = (int)(ARecvBuffer[i] & ~ASCII_MASK);
-            val = val * 10 + num;
-        }
-    }
-
-    row = 0;
-    col = 0;
-    val = 0;
-    for(u32 i = 0; i < BBytesReceived; i ++) {
-        if(BRecvBuffer[i] == '\r') {
-            continue;
-        } else if(BRecvBuffer[i] == '\n') {
-            B[row][col] = val;
-            row++;
-            col = 0;
-            val = 0;
-        } else if(BRecvBuffer[i] == ',') {
-            B[row][col] = val;
-            col++;
-            val = 0;
-        } else {
-            int num = (int)(BRecvBuffer[i] & ~ASCII_MASK);
-            val = val * 10 + num;
-        }
-    }
 }

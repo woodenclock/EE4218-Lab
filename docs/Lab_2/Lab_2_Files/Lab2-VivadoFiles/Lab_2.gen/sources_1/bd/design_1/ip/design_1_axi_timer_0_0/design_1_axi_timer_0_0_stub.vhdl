@@ -2,7 +2,7 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.2 (win64) Build 6299465 Fri Nov 14 19:35:11 GMT 2025
--- Date        : Thu Feb 19 21:07:43 2026
+-- Date        : Fri Feb 20 15:42:51 2026
 -- Host        : ELVIS-ASUS-VIVOBOOK running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode synth_stub
 --               c:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.gen/sources_1/bd/design_1/ip/design_1_axi_timer_0_0/design_1_axi_timer_0_0_stub.vhdl
@@ -46,7 +46,7 @@ entity design_1_axi_timer_0_0 is
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of design_1_axi_timer_0_0 : entity is "design_1_axi_timer_0_0,axi_timer,{}";
   attribute core_generation_info : string;
-  attribute core_generation_info of design_1_axi_timer_0_0 : entity is "design_1_axi_timer_0_0,axi_timer,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_timer,x_ipVersion=2.0,x_ipCoreRevision=37,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynquplus,C_COUNT_WIDTH=32,C_ONE_TIMER_ONLY=0,C_TRIG0_ASSERT=1,C_TRIG1_ASSERT=1,C_GEN0_ASSERT=1,C_GEN1_ASSERT=1,C_S_AXI_DATA_WIDTH=32,C_S_AXI_ADDR_WIDTH=5}";
+  attribute core_generation_info of design_1_axi_timer_0_0 : entity is "design_1_axi_timer_0_0,axi_timer,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=ip,x_ipName=axi_timer,x_ipVersion=2.0,x_ipCoreRevision=37,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,C_FAMILY=zynquplus,C_COUNT_WIDTH=32,C_ONE_TIMER_ONLY=1,C_TRIG0_ASSERT=1,C_TRIG1_ASSERT=1,C_GEN0_ASSERT=1,C_GEN1_ASSERT=1,C_S_AXI_DATA_WIDTH=32,C_S_AXI_ADDR_WIDTH=5}";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of design_1_axi_timer_0_0 : entity is "yes";
 end design_1_axi_timer_0_0;

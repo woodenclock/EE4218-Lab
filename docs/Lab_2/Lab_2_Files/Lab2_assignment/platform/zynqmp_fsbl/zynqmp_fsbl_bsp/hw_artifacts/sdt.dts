@@ -4195,7 +4195,7 @@
                         xlnx,trig0-assert = <0x1>;
                         xlnx,count-width = <0x20>;
                         xlnx,ip-name = "axi_timer";
-                        xlnx,one-timer-only = <0x0>;
+                        xlnx,one-timer-only = <0x1>;
                         reg = <0x0 0xa0020000 0x0 0x10000>;
                         clocks = <&zynqmp_clk 0x47>;
                         xlnx,gen0-assert = <0x1>;
@@ -4204,7 +4204,7 @@
                         status = "okay";
                         xlnx,trig1-assert = <0x1>;
                         clock-names = "s_axi_aclk";
-                        xlnx,enable-timer2 = <0x1>;
+                        xlnx,enable-timer2 = <0x0>;
                         xlnx,name = "axi_timer_0";
                 };
         };
