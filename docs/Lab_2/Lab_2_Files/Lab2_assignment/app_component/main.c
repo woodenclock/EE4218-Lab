@@ -19,6 +19,8 @@
 #include <stdbool.h>
 #include "matrix.h"
 
+#include "xtmrctr.h"
+
 /************************** Constant Definitions *****************************/
 
 /*
@@ -41,6 +43,12 @@
 #define UART_DEVICE_ID                  XPAR_XUARTPS_0_DEVICE_ID
 #else
 #define	XUARTPS_BASEADDRESS		        XPAR_XUARTPS_0_BASEADDR
+#endif
+
+#ifndef SDT
+#define TMRCTR_DEVICE_ID XPAR_TMRCTR_0_DEVICE_ID
+#else
+#define XTMRCTR_BASEADDRESS XPAR_XTMRCTR_0_BASEADDR
 #endif
 
 static XLlFifo Fifo;
@@ -71,6 +79,7 @@ void parseData(u8 ARecvBuffer[MAX_A_CSV], u8 BRecvBuffer[MAX_B_CSV],
 /************************** Variable Definitions *****************************/
 
 XUartPs Uart_Ps;		/* The instance of the UART Driver */
+XTmrCtr TimerCounter;   /* The instance of the Tmrctr Device */
 
 /*****************************************************************************/
 
@@ -179,6 +188,11 @@ static void UnpackAB(const u32 rx[NUM_WORDS], int A[A_ROWS][A_COLS], int B[B_ROW
 int main(void)
 {
 	int Status;
+    int tmr_status;
+    int loopback_status;
+    u32 value1;
+    u32 value2;
+    u32 time_taken;
 
 #ifndef SDT
 	Status = UartPsInitialise(UART_DEVICE_ID);
@@ -190,6 +204,19 @@ int main(void)
 		return XST_FAILURE;
 	}
 
+#ifndef SDT
+    tmr_status = XTmrCtr_Initialize(&TimerCounter, TMRCTR_DEVICE_ID);
+#else
+    tmr_status = XTmrCtr_Initialize(&TimerCounter, XTMRCTR_BASEADDRESS);
+#endif
+    if (tmr_status != XST_SUCCESS) {
+        xil_printf("Unable to initialise timer\r\n");
+        return XST_FAILURE;
+    }  
+
+    // start timer
+    XTmrCtr_Start(&TimerCounter, 0);
+    
     UartReceiveData(A, B);
 
     // --- FIFO loopback stage (Only for Lab 2) ---
@@ -200,19 +227,39 @@ int main(void)
 
     PackAB(A, B, TxWords);
 
-    if (FifoLoopbackChunked(TxWords, RxWords, NUM_WORDS) != XST_SUCCESS) {
+    // get timer value before loopback
+    value1 = XTmrCtr_GetValue(&TimerCounter, 0);
+
+    loopback_status = FifoLoopbackChunked(TxWords, RxWords, NUM_WORDS);
+
+    // get timer value after loopback
+    value2 = XTmrCtr_GetValue(&TimerCounter, 0);
+
+    if (loopback_status != XST_SUCCESS) {
         xil_printf("FIFO loopback failed\r\n");
         return XST_FAILURE;
     }
 
+    time_taken = (value2 - value1) / 10;
+    xil_printf("FIFO loopback time taken: %u ns\r\n", time_taken);
+
     // Overwrite A,B with what came back from FIFO
     UnpackAB(RxWords, A, B);
 
+    // get timer value before calculations
+    value1 = XTmrCtr_GetValue(&TimerCounter, 0);
+
     // compute RES = A*B/256
-    MatMulDiv256(A, B, RES);    
+    MatMulDiv256(A, B, RES);
+
+    // get timer value after calculations
+    value2 = XTmrCtr_GetValue(&TimerCounter, 0);
 
     // send RES back to PC as CSV (1 value per line)
     PrintResCsv(RES);
+
+    time_taken = (value2 - value1) / 10;
+    xil_printf("Calculation time taken: %u ns\r\n", time_taken);
 
     while (1);
 }
