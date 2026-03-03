@@ -1,3 +1,4 @@
+
 *.cache/
 *.hw/
 *.ip_user_files/
@@ -11,4 +12,5 @@
 *.log
 *.str
 
+dfx_runtime.txt
 dfx_runtime.txt
