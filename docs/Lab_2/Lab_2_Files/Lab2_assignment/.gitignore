@@ -16,6 +16,8 @@
 .bin
 .pdi
 .vitisWorkspace.json
+.rigel_lopper
 
-_ide/logs
-_ide/.wsdata
+/_ide/
+/platform/
+/app_component/

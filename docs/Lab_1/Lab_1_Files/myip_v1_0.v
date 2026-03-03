@@ -15,6 +15,7 @@
 --
 -------------------------------------------------------------------------------
 */
+`include "sharedparams.vh"
 
 module myip_v1_0 
 	(
@@ -62,9 +63,9 @@ module myip_v1_0
     localparam m = 2;
     localparam n = 4;
     
-    localparam A_elements = m * n;
-	localparam B_elements = n;
-	localparam RES_elements = m;
+    localparam A_elements = `M * `N;
+	localparam B_elements = `N;
+	localparam RES_elements = `M;
 	
 	localparam A_depth_bits = $clog2(A_elements);  	// 8 elements (A is a 2x4 matrix)
 	localparam B_depth_bits = $clog2(B_elements); 	// 4 elements (B is a 4x1 matrix)
@@ -75,22 +76,22 @@ module myip_v1_0
 // those which are assigned in an always block of myip_v1_0 shoud be changes to reg.
 	reg    	A_write_en;									// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg.
 	reg    	[A_depth_bits-1:0] A_write_address;			// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg. 
-	reg    	[width-1:0] A_write_data_in;				// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg.
+	reg    	[`WIDTH-1:0] A_write_data_in;				// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg.
 	wire    A_read_en;									// matrix_multiply_0 -> A_RAM.
 	wire    [A_depth_bits-1:0] A_read_address;		    // matrix_multiply_0 -> A_RAM.
-	wire	[width-1:0] A_read_data_out;				// A_RAM -> matrix_multiply_0.
+	wire	[`WIDTH-1:0] A_read_data_out;				// A_RAM -> matrix_multiply_0.
 	reg    	B_write_en;									// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
 	reg	    [B_depth_bits-1:0] B_write_address;			// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
-	reg 	[width-1:0] B_write_data_in;				// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
+	reg 	[`WIDTH-1:0] B_write_data_in;				// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
 	wire 	B_read_en;									// matrix_multiply_0 -> B_RAM.
 	wire 	[B_depth_bits-1:0] B_read_address;		    // matrix_multiply_0 -> B_RAM.
-	wire	[width-1:0] B_read_data_out;				// B_RAM -> matrix_multiply_0.
+	wire	[`WIDTH-1:0] B_read_data_out;				// B_RAM -> matrix_multiply_0.
 	wire 	RES_write_en;								// matrix_multiply_0 -> RES_RAM.
 	wire 	[RES_depth_bits-1:0] RES_write_address;		// matrix_multiply_0 -> RES_RAM.
-	wire 	[width-1:0] RES_write_data_in;				// matrix_multiply_0 -> RES_RAM.
+	wire 	[`WIDTH-1:0] RES_write_data_in;				// matrix_multiply_0 -> RES_RAM.
 	reg 	RES_read_en = 0;  							// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
 	reg    [RES_depth_bits-1:0] RES_read_address;	// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
-	wire	[width-1:0] RES_read_data_out;				// RES_RAM -> myip_v1_0
+	wire	[`WIDTH-1:0] RES_read_data_out;				// RES_RAM -> myip_v1_0
 	
 	// wires (or regs) to connect to matrix_multiply for assignment 1
 	reg 	Start; 										// myip_v1_0 -> matrix_multiply_0. To be assigned within myip_v1_0. Possibly reg.
@@ -252,7 +253,7 @@ module myip_v1_0
 	
 	memory_RAM 
 	#(
-		.width(width), 
+		.width(`WIDTH), 
 		.depth_bits(A_depth_bits)
 	) A_RAM 
 	(
@@ -268,7 +269,7 @@ module myip_v1_0
 										
 	memory_RAM 
 	#(
-		.width(width), 
+		.width(`WIDTH), 
 		.depth_bits(B_depth_bits)
 	) B_RAM 
 	(
@@ -284,7 +285,7 @@ module myip_v1_0
 										
 	memory_RAM 
 	#(
-		.width(width), 
+		.width(`WIDTH), 
 		.depth_bits(RES_depth_bits)
 	) RES_RAM 
 	(
@@ -299,7 +300,7 @@ module myip_v1_0
 										
 	matrix_multiply 
 	#(
-		.width(width), 
+		.width(`WIDTH), 
 		.A_depth_bits(A_depth_bits), 
 		.B_depth_bits(B_depth_bits), 
 		.RES_depth_bits(RES_depth_bits) 
