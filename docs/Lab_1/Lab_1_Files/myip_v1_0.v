@@ -60,8 +60,6 @@ module myip_v1_0
 // MODULE myip_v1_0 to implement your coprocessor
 
 // RAM parameters for assignment 1
-    localparam m = 2;
-    localparam n = 4;
     
     localparam A_elements = `M * `N;
 	localparam B_elements = `N;
