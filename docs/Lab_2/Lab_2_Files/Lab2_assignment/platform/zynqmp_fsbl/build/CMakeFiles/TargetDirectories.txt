@@ -1,4 +1,0 @@
-C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/build/CMakeFiles/fsbl.elf.dir
-C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/build/CMakeFiles/print_build_info.dir
-C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/build/CMakeFiles/edit_cache.dir
-C:/Users/ELVIS/EE4218-Lab/docs/Lab_2/Lab_2_Files/Lab2_assignment/platform/zynqmp_fsbl/build/CMakeFiles/rebuild_cache.dir
