@@ -1,0 +1,14 @@
+*.cache/
+*.hw/
+*.ip_user_files/
+*.sdk/
+*.Xil/
+*_hw_platform/
+*.gen/
+*.runs/
+
+*.jou
+*.log
+*.str
+
+dfx_runtime.txt
