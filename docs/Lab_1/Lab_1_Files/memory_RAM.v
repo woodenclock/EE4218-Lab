@@ -1,10 +1,11 @@
 `timescale 1ns / 1ps
+`include "sharedparams.vh"
 
 // width is the number of bits per location; depth_bits is the number of address bits. 2^depth_bits is the number of locations
 
 module memory_RAM
 	#(
-		parameter width = 8, 					// width is the number of bits per location
+		parameter width = `WIDTH, 					// width is the number of bits per location
 		parameter depth_bits = 2				// depth is the number of locations (2^number of address bits)
 	) 
 	(

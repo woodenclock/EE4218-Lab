@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+`include "sharedparams.vh"
 
 // those outputs which are assigned in an always block of matrix_multiply should be changed to reg (such as output reg Done).
 
@@ -15,16 +16,15 @@ module matrix_multiply
 		
 		output reg A_read_en,  								// matrix_multiply_0 -> A_RAM. Possibly reg.
 		output reg [A_depth_bits-1:0] A_read_address, 		// matrix_multiply_0 -> A_RAM. Possibly reg.		
-		input  [width-1:0] A_read_data_out,					// A_RAM -> matrix_multiply_0.
-
+		input  [`WIDTH-1:0] A_read_data_out,					// A_RAM -> matrix_multiply_0.
 
 		output reg B_read_en, 								// matrix_multiply_0 -> B_RAM. Possibly reg.
 		output reg [B_depth_bits-1:0] B_read_address, 		// matrix_multiply_0 -> B_RAM. Possibly reg.
-		input  [width-1:0] B_read_data_out,					// B_RAM -> matrix_multiply_0.
+		input  [`WIDTH-1:0] B_read_data_out,					// B_RAM -> matrix_multiply_0.
 		
 		output reg RES_write_en, 							// matrix_multiply_0 -> RES_RAM. Possibly reg.
 		output reg [RES_depth_bits-1:0] RES_write_address, 	// matrix_multiply_0 -> RES_RAM. Possibly reg.
-		output reg [width-1:0] RES_write_data_in 			// matrix_multiply_0 -> RES_RAM. Possibly reg.
+		output reg [`WIDTH-1:0] RES_write_data_in 			// matrix_multiply_0 -> RES_RAM. Possibly reg.
 	);
 	
 	// implement the logic to read A_RAM, read B_RAM, do the multiplication and write the results to RES_RAM
@@ -50,16 +50,16 @@ module matrix_multiply
 	reg [RES_depth_bits-1:0] row;      // 1-bit register, 0..M-1, to store which row we are currently computing (2)
 	reg [B_depth_bits-1:0]   col;      // 2-bit register, 0..N-1, to store which col we are currently computing (4)
 
-	reg  [width*2-1:0] acc;            // sum of 16-bit products fits in 16 bits for lab constraints
-	wire [width*2-1:0] prod = A_read_data_out * B_read_data_out;
-	wire [width*2-1:0] acc_next = acc + prod;
+	reg  [`WIDTH*2-1:0] acc;            // accumulate; sum of 16-bit products fits in 16 bits for lab constraints
+	wire [`WIDTH*2-1:0] prod = A_read_data_out * B_read_data_out;
+	wire [`WIDTH*2-1:0] acc_next = acc + prod;
 
-	reg [width-1:0] row_result_byte;   // 8-bit reg that stores (acc_next / 256) for stable write in next state
+	reg [`WIDTH-1:0] row_result_byte;   // 8-bit reg that stores (acc_next / 256) for stable write in next state
 
 	// Helper: compute A address = row*N + col
 	// Since # of cols, N = 2^B_depth_bits, row*N = row << B_depth_bits
 	// row << B_depth_bits is same as row*N
-	wire [A_depth_bits-1:0] a_addr_next = (row << B_depth_bits) + col;
+	wire [A_depth_bits-1:0] a_addr_next = (row << B_depth_bits) + col; // col != 4, it's the col number we want to retrieve
 
 	always @(posedge clk) begin
 		// Defaults
@@ -73,7 +73,7 @@ module matrix_multiply
 				A_read_address  <= {A_depth_bits{1'b0}};
 				B_read_address  <= {B_depth_bits{1'b0}};
 				RES_write_address <= {RES_depth_bits{1'b0}};
-				RES_write_data_in <= {width{1'b0}};
+				RES_write_data_in <= {`WIDTH{1'b0}};
 
 				row <= {RES_depth_bits{1'b0}};
 				col <= {B_depth_bits{1'b0}};
