@@ -28,8 +28,10 @@ app_component/
 *.gen/
 *.runs/
 
-.jou
-.log
-.str
+*.jou
+*.log
+*.str
 
 dfx_runtime.txt
+
+ip_repo/ 
