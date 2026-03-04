@@ -5,7 +5,7 @@
 
 module memory_RAM
 	#(
-		parameter width = `WIDTH, 					// width is the number of bits per location
+		parameter width = `WIDTH, 				// width is the number of bits per location
 		parameter depth_bits = 2				// depth is the number of locations (2^number of address bits)
 	) 
 	(
