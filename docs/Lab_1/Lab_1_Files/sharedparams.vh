@@ -5,14 +5,11 @@
 `define N 8
 `define WIDTH 8
 
-//`define A_DEPTH_BITS $clog2(`M * `N)
-//`define B_DEPTH_BITS $clog2(`N)
-//`define RES_DEPTH_BITS $clog2(`M)
 
-//  localparam m = 2;
-//  localparam n = 4;
+//    localparam m = 2;
+//    localparam n = 4;
     
-//  localparam A_elements = m * n;
+//    localparam A_elements = m * n;
 //	localparam B_elements = n;
 //	localparam RES_elements = m;
 	

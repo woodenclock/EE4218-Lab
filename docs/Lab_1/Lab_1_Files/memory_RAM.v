@@ -5,7 +5,7 @@
 
 module memory_RAM
 	#(
-		parameter width = `WIDTH, 				// width is the number of bits per location
+		parameter width = `WIDTH, 					// width is the number of bits per location
 		parameter depth_bits = 2				// depth is the number of locations (2^number of address bits)
 	) 
 	(
@@ -25,7 +25,7 @@ module memory_RAM
     // to convert external signals to a form followed in the template given in Vivado synthesis manual. 
     // Not really necessary, but to follow the spirit of using templates
     assign enable = read_en | write_en;
-    assign address = write_en ? write_address : read_address;
+    assign address = write_en? write_address:read_address;
     
   	// the following is from a template given in Vivado synthesis manual.
   	// Read up more about write first, read first, no change modes.
