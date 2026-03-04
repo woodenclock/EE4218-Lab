@@ -53,6 +53,17 @@ module matrix_multiply
 	wire [ACC_WIDTH-1:0] prod_ext = {{(ACC_WIDTH-(2*width)){1'b0}}, prod};
     wire [ACC_WIDTH-1:0] acc_next = acc + prod_ext;
     
+    initial begin
+        state = IDLE;
+        row = 0;
+        col = 0;
+        acc = 0;
+        Done = 0;
+        A_read_en = 0;
+        B_read_en = 0;
+        RES_write_en = 0;
+    end
+    
 	// Helper: compute A address = row*N + col
 	// Since # of cols, N = 2^B_depth_bits, row*N = row << B_depth_bits
 	// row << B_depth_bits is same as row*N

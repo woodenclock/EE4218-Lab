@@ -15,10 +15,7 @@
 ----------------------------------------------------------------------------------
 */
 
-module tb_myip_v1_0(
-
-    );
-    
+module tb_myip_v1_0( );
     reg                          ACLK = 0;    	 // Synchronous clock
     reg                          ARESETN; 		 // System reset, active low
     // slave in interface
