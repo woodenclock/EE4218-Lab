@@ -1,4 +1,6 @@
 build/
+*.xpr
+
 export/
 
 .o
@@ -50,4 +52,5 @@ psu_cortexa53_0/
 CMakeLists.txt
 dfx_runtime.txt
 
-ip_repo/ 
+ip_repo/
+docs/Lab_3/Lab_3_Files/Lab_3/Lab_3.sim/
