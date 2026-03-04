@@ -31,7 +31,23 @@ app_component/
 *.jou
 *.log
 *.str
+*.yaml
+*.cmake
+*.json
+*.ld
 
+sdt/
+resources/
+zynqmp_fsbl/
+hw_artifacts/
+include/
+lib/
+libsrc/
+psu_cortexa53_0/
+.compile_commands/
+.clangd
+
+CMakeLists.txt
 dfx_runtime.txt
 
 ip_repo/ 
