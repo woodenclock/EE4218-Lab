@@ -1,5 +1,7 @@
 build/
 *.xpr
+*.xci
+*.bd
 
 export/
 
@@ -54,3 +56,9 @@ dfx_runtime.txt
 
 ip_repo/
 docs/Lab_3/Lab_3_Files/Lab_3/Lab_3.sim/
+docs/Lab_3/Lab_3_Files/Lab_3/memory_RAM.v.txt
+docs/Lab_3/Lab_3_Files/Lab_3/myip_v1_0.v.txt
+docs/Lab_3/Lab_3_Files/Lab_3/sharedparams.vh.txt
+docs/Lab_3/Lab_3_Files/Lab_3/matrix_multiply.v.txt
+docs/Lab_3/Lab_3_Files/Lab_3/tb_myip_v1_0.v.txt
+docs/Lab_3/Lab_3_Files/matrix_multiply_w_axi_fifo/main.c.txt
