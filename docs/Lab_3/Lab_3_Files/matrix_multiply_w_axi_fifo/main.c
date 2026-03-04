@@ -149,14 +149,13 @@ int main(void)
 
     XTmrCtr_Reset(&TimerCounter, 0);
     XTmrCtr_Start(&TimerCounter, 0);
-
     u32 v1 = XTmrCtr_GetValue(&TimerCounter, 0);    // get timer value before multiplication
     matrix_multiply_status = FifoMatrixMultiply(TxWords, RxWords, NUM_WORDS_TX, NUM_WORDS_RX);
     u32 v2 = XTmrCtr_GetValue(&TimerCounter, 0);    // get timer value after multiplication
     XTmrCtr_Stop(&TimerCounter, 0);
 
     if (matrix_multiply_status != XST_SUCCESS) {
-        xil_printf("FIFO loopback failed\r\n");
+        xil_printf("FIFO matrix multiply failed\r\n");
         return XST_FAILURE;
     }
 
@@ -164,8 +163,8 @@ int main(void)
     xil_printf("FIFO_MATMUL_US,%lu\r\n", counts_to_us(delta));
 
     XTmrCtr_Reset(&TimerCounter, 0);
-    XTmrCtr_Start(&TimerCounter, 0);
-    u32 m1 = XTmrCtr_GetValue(&TimerCounter, 0);    
+    XTmrCtr_Start(&TimerCounter, 0);   
+    u32 m1 = XTmrCtr_GetValue(&TimerCounter, 0); 
     UnpackRES(RxWords, RES);
     u32 m2 = XTmrCtr_GetValue(&TimerCounter, 0);    
     XTmrCtr_Stop(&TimerCounter, 0);
@@ -254,7 +253,11 @@ void UartReceiveData(int A[A_ROWS][A_COLS], int B[B_ROWS][B_COLS])
 
 static int TimerInit(void)
 {
-    XTmrCtr_Config *cfg = XTmrCtr_LookupConfig(XPAR_XTMRCTR_0_BASEADDR);
+#ifndef SDT
+    XTmrCtr_Config *cfg = XTmrCtr_LookupConfig(TMRCTR_DEVICE_ID);
+#else
+    XTmrCtr_Config *cfg = XTmrCtr_LookupConfig(XTMRCTR_BASEADDRESS);
+#endif
 
     if (!cfg) {
         xil_printf("TMR: LookupConfig failed\r\n");
@@ -262,8 +265,12 @@ static int TimerInit(void)
     }
 
     XTmrCtr_CfgInitialize(&TimerCounter, cfg, cfg->BaseAddress);
-    
-    XTmrCtr_SetOptions(&TimerCounter, 0, XTC_AUTO_RELOAD_OPTION);
+
+    XTmrCtr_SetOptions(&TimerCounter, 0, XTC_AUTO_RELOAD_OPTION | XTC_DOWN_COUNT_OPTION);
+    XTmrCtr_SetResetValue(&TimerCounter, 0, 0xFFFFFFFF);
+
+    xil_printf("Timer initialized. Clock: %lu Hz\r\n", 
+               (unsigned long)XPAR_XTMRCTR_0_CLOCK_FREQUENCY);
     
     return XST_SUCCESS;
 }
