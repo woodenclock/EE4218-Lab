@@ -272,13 +272,13 @@ int main(void)
     XTmrCtr_Stop(&TimerCounter, 0);
 
     u32 delta = ticks_down_elapsed(v1, v2);
-    xil_printf("FIFO_US,%lu\r\n", counts_to_us(delta));
+    // xil_printf("FIFO_US,%lu\r\n", counts_to_us(delta));
 
     u32 mticks = ticks_down_elapsed(m1, m2);
-    xil_printf("MATMUL_US,%lu\r\n", counts_to_us(mticks));
+    // xil_printf("MATMUL_US,%lu\r\n", counts_to_us(mticks));
 
     u32 totTime = ticks_down_elapsed(v1, m2);
-    xil_printf("TOTTIME_US,%lu\r\n", counts_to_us(totTime));
+    // xil_printf("TOTTIME_US,%lu\r\n", counts_to_us(totTime));
 
 
     // /* Print timing (separate from RES) */
@@ -291,6 +291,9 @@ int main(void)
     xil_printf("RES_BEGIN\r\n");
     PrintResCsv(RES);
     xil_printf("RES_END\r\n");
+    xil_printf("FIFO_US,%lu\r\n", counts_to_us(delta));
+    xil_printf("MATMUL_US,%lu\r\n", counts_to_us(mticks));
+    xil_printf("TOTTIME_US,%lu\r\n", counts_to_us(totTime));
 
     while (1);
 }
