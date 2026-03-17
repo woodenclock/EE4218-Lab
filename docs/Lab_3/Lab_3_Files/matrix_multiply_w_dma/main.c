@@ -180,7 +180,7 @@ int main(void)
     }
 
     u32 delta = ticks_down_elapsed(v1, v2);
-    xil_printf("DMA_MATMUL_US,%lu\r\n", counts_to_us(delta));
+    // xil_printf("DMA_MATMUL_US,%lu\r\n", counts_to_us(delta));
 
     XTmrCtr_Reset(&TimerCounter, 0);
     XTmrCtr_Start(&TimerCounter, 0);   
@@ -189,12 +189,14 @@ int main(void)
     u32 m2 = XTmrCtr_GetValue(&TimerCounter, 0);    
     XTmrCtr_Stop(&TimerCounter, 0);
     u32 mticks = ticks_down_elapsed(m1, m2);
-    xil_printf("UNPACK_US,%lu\r\n", counts_to_us(mticks));
+    // xil_printf("UNPACK_US,%lu\r\n", counts_to_us(mticks));
 
     /* Print RES clean */
     xil_printf("RES_BEGIN\r\n");
     PrintResCsv(RES);
     xil_printf("RES_END\r\n");
+    xil_printf("DMA_MATMUL_US,%lu\r\n", counts_to_us(delta));
+    xil_printf("UNPACK_US,%lu\r\n", counts_to_us(mticks));
 
     while (1);
 }
