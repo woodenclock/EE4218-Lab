@@ -52,14 +52,12 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 	//int sum = 0;		 // using 32 bit precision
 	AXIS read_input, write_output;
 		//read A matrix input
-		#pragma HLS PIPELINE II=1
 		myip_v1_0_HLS_forA:for(word_cnt = 0; word_cnt < NUMBER_OF_INPUT_A; word_cnt++){
 			read_input = S_AXIS.read();
 			A_IN[word_cnt / A_COLS][word_cnt % A_COLS] = read_input.data;
 		}
 
 		//read B matrix input
-		#pragma HLS PIPELINE II=1
 		myip_v1_0_HLS_forB:for(word_cnt = 0; word_cnt < NUMBER_OF_INPUT_B; word_cnt++){
 			read_input = S_AXIS.read();
 			B_IN[word_cnt / B_COLS][word_cnt % B_COLS] = read_input.data;
