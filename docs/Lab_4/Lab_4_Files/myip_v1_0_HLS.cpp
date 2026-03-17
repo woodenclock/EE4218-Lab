@@ -70,7 +70,6 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 				#pragma HLS UNROLL
 				int32_t acc = 0;
 				for (int j = 0; j < A_COLS; j++){
-					#pragma HLS pipeline II=1
 					acc += (int32_t)A_IN[i][j] * (int32_t)B_IN[j][k];
 				}
 			RES_OUT[i][k] = (int)(acc >> 8);
