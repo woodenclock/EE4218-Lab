@@ -43,14 +43,15 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 	int B_IN[B_ROWS][B_COLS];
 	int RES_OUT[RES_ROWS][RES_COLS];
 
-	#pragma HLS array_partition variable=A_IN dim=2 complete
-	#pragma HLS array_partition variable=B_IN dim=1 complete
-	#pragma HLS array_partition variable=RES_OUT dim=2 complete
+	#pragma HLS array_partition variable=A_IN
+	#pragma HLS array_partition variable=B_IN
+	#pragma HLS array_partition variable=RES_OUT
 
 	int word_cnt;
 	//ap_uint<8> sum = 0; // using arbitrary precision
 	//int sum = 0;		 // using 32 bit precision
 	AXIS read_input, write_output;
+
 		//read A matrix input
 		myip_v1_0_HLS_forA:for(word_cnt = 0; word_cnt < NUMBER_OF_INPUT_A; word_cnt++){
 			read_input = S_AXIS.read();
@@ -67,7 +68,6 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 		myip_v1_0_HLS_forMult:for(int i = 0; i < A_ROWS; i++){
 		#pragma HLS UNROLL
 			for (int k = 0; k < B_COLS; k++){
-				#pragma HLS UNROLL
 				int32_t acc = 0;
 				for (int j = 0; j < A_COLS; j++){
 					acc += (int32_t)A_IN[i][j] * (int32_t)B_IN[j][k];
@@ -77,7 +77,6 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 		}
 
 		myip_v1_0_HLS_for2:for(word_cnt = 0; word_cnt < NUMBER_OF_OUTPUT_WORDS; word_cnt++){
-			#pragma HLS UNROLL
 			//write_output.data = sum.to_int() + word_cnt;	// using arbitrary precision internally but int for interfacing
 			write_output.data = RES_OUT[word_cnt / RES_COLS][word_cnt % RES_COLS];	// using 32 bit precision or arbitrary precision all the way
 			// write_output is the element sent by our ip through M_AXIS in one clock cycle.
