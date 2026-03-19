@@ -67,7 +67,7 @@ void myip_v1_0_HLS(hls::stream<AXIS>& S_AXIS, hls::stream<AXIS>& M_AXIS){
 		//matrix multiplication
 		myip_v1_0_HLS_forMult:for(int i = 0; i < A_ROWS; i++){
 		// #pragma HLS UNROLL
-		#pragma HLS PIPELINE off
+		// #pragma HLS PIPELINE off
 			for (int k = 0; k < B_COLS; k++){		
 				int32_t acc = 0;
 				for (int j = 0; j < A_COLS; j++){
