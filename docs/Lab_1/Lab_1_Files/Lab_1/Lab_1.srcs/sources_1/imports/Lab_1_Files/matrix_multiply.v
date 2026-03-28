@@ -2,9 +2,9 @@
 `include "sharedparams.vh"
 
 module matrix_multiply
-    #(  parameter width        = `WIDTH,
-        parameter A_depth_bits = 3,
-        parameter B_depth_bits = 2,
+    #(  parameter width          = `WIDTH,
+        parameter A_depth_bits   = 3,
+        parameter B_depth_bits   = 2,
         parameter RES_depth_bits = 1
     )
     (
