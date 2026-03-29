@@ -1,324 +1,346 @@
 /*
--------------------------------------------------------------------------------
+--------------------------------------------------------------------------------
+-- myip_v1_0.v  –  AXI-Stream coprocessor wrapper for MLP inference
 --
--- Definition of Ports
--- ACLK              : Synchronous clock
--- ARESETN           : System reset, active low
--- S_AXIS_TREADY  : Ready to accept data in
--- S_AXIS_TDATA   :  Data in 
--- S_AXIS_TLAST   : Optional data in qualifier
--- S_AXIS_TVALID  : Data in is valid
--- M_AXIS_TVALID  :  Data out is valid
--- M_AXIS_TDATA   : Data Out
--- M_AXIS_TLAST   : Optional data out qualifier
--- M_AXIS_TREADY  : Connected slave device is ready to accept data out
+-- Input stream  (531 x 8-bit words, padded in 32-bit TDATA[7:0]):
+--   [  0 .. 511] : X[64][8]      row-major; X[r][0] = 0 (bias handled in HW)
+--   [512 .. 527] : W_HID[2][8]   neuron-0 first (k=0..7), then neuron-1
+--   [528 .. 530] : W_OUT[3]      {bias=80, hid0=50, hid1=200}
 --
--------------------------------------------------------------------------------
+-- Output stream (64 x 8-bit words):
+--   Predictions 0 or 1 for each of the 64 samples.
+--------------------------------------------------------------------------------
 */
+`timescale 1ns / 1ps
 `include "sharedparams.vh"
 
-module myip_v1_0 
-	(
-		// DO NOT EDIT BELOW THIS LINE ////////////////////
-		ACLK,
-		ARESETN,
-		S_AXIS_TREADY,
-		S_AXIS_TDATA,
-		S_AXIS_TLAST,
-		S_AXIS_TVALID,
-		M_AXIS_TVALID,
-		M_AXIS_TDATA,
-		M_AXIS_TLAST,
-		M_AXIS_TREADY
-		// DO NOT EDIT ABOVE THIS LINE ////////////////////
-	);
+module myip_v1_0 (
+    // DO NOT EDIT BELOW THIS LINE ////////////////////
+    ACLK,
+    ARESETN,
+    S_AXIS_TREADY,
+    S_AXIS_TDATA,
+    S_AXIS_TLAST,
+    S_AXIS_TVALID,
+    M_AXIS_TVALID,
+    M_AXIS_TDATA,
+    M_AXIS_TLAST,
+    M_AXIS_TREADY
+    // DO NOT EDIT ABOVE THIS LINE ////////////////////
+);
 
-	input					ACLK;    		     // Synchronous clock
-	input					ARESETN; 		     // System reset, active low
-	// slave in interface
-	output	reg				S_AXIS_TREADY;       // Ready to accept data in
-	input	[31 : 0]		S_AXIS_TDATA;        // Data in
-	input					S_AXIS_TLAST;        // Optional data in qualifier
-	input					S_AXIS_TVALID;       // Data in is valid
-	// master out interface
-	output	reg				M_AXIS_TVALID;       // Data out is valid
-	output	reg [31 : 0]	M_AXIS_TDATA = 0;    // Data Out
-	output	reg				M_AXIS_TLAST;        // Optional data out qualifier
-	input					M_AXIS_TREADY;       // Connected slave device is ready to accept data out
+input           ACLK;
+input           ARESETN;
+output reg      S_AXIS_TREADY;
+input  [31:0]   S_AXIS_TDATA;
+input           S_AXIS_TLAST;
+input           S_AXIS_TVALID;
+output reg      M_AXIS_TVALID;
+output reg [31:0] M_AXIS_TDATA;
+output reg      M_AXIS_TLAST;
+input           M_AXIS_TREADY;
 
-//----------------------------------------
-// Implementation Section
-//----------------------------------------
-// In this section, we provide an example implementation of MODULE myip_v1_0
-// that does the following:
-//
-// 1. Read all inputs
-// 2. Add each input to the contents of register 'sum' which acts as an accumulator
-// 3. After all the inputs have been read, write out the content of 'sum', 'sum+1', 'sum+2', 'sum+3'
-//
-// You will need to modify this example for
-// MODULE myip_v1_0 to implement your coprocessor
+// ---------------------------------------------------------------------------
+// RAM sizes
+// ---------------------------------------------------------------------------
+localparam X_DEPTH_BITS    = `X_DEPTH_BITS;    // 9  → 512 entries
+localparam WHID_DEPTH_BITS = `WHID_DEPTH_BITS;  // 4  → 16  entries
+localparam WOUT_DEPTH_BITS = `WOUT_DEPTH_BITS;  // 2  → 4   entries (3 used)
+localparam RES_DEPTH_BITS  = `RES_DEPTH_BITS;   // 6  → 64  entries
 
-// RAM parameters for assignment 1
-    
-    localparam A_elements = `M * `N;
-	localparam B_elements = `N;
-	localparam RES_elements = `M;
-	
-	localparam A_depth_bits = $clog2(A_elements);  	// 8 elements (A is a 2x4 matrix)
-	localparam B_depth_bits = $clog2(B_elements); 	// 4 elements (B is a 4x1 matrix)
-	localparam RES_depth_bits = $clog2(RES_elements);	// 2 elements (RES is a 2x1 matrix)
-	localparam width = 8;			// all 8-bit data
-	
-// wires (or regs) to connect to RAMs and matrix_multiply_0 for assignment 1
-// those which are assigned in an always block of myip_v1_0 shoud be changes to reg.
-	reg    	A_write_en;									// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg.
-	reg    	[A_depth_bits-1:0] A_write_address;			// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg. 
-	reg    	[`WIDTH-1:0] A_write_data_in;				// myip_v1_0 -> A_RAM. To be assigned within myip_v1_0. Possibly reg.
-	wire    A_read_en;									// matrix_multiply_0 -> A_RAM.
-	wire    [A_depth_bits-1:0] A_read_address;		    // matrix_multiply_0 -> A_RAM.
-	wire	[`WIDTH-1:0] A_read_data_out;				// A_RAM -> matrix_multiply_0.
-	reg    	B_write_en;									// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
-	reg	    [B_depth_bits-1:0] B_write_address;			// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
-	reg 	[`WIDTH-1:0] B_write_data_in;				// myip_v1_0 -> B_RAM. To be assigned within myip_v1_0. Possibly reg.
-	wire 	B_read_en;									// matrix_multiply_0 -> B_RAM.
-	wire 	[B_depth_bits-1:0] B_read_address;		    // matrix_multiply_0 -> B_RAM.
-	wire	[`WIDTH-1:0] B_read_data_out;				// B_RAM -> matrix_multiply_0.
-	wire 	RES_write_en;								// matrix_multiply_0 -> RES_RAM.
-	wire 	[RES_depth_bits-1:0] RES_write_address;		// matrix_multiply_0 -> RES_RAM.
-	wire 	[`WIDTH-1:0] RES_write_data_in;				// matrix_multiply_0 -> RES_RAM.
-	reg 	RES_read_en = 0;  							// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
-	reg    [RES_depth_bits-1:0] RES_read_address;	// myip_v1_0 -> RES_RAM. To be assigned within myip_v1_0. Possibly reg.
-	wire	[`WIDTH-1:0] RES_read_data_out;				// RES_RAM -> myip_v1_0
-	
-	// wires (or regs) to connect to matrix_multiply for assignment 1
-	reg 	Start; 										// myip_v1_0 -> matrix_multiply_0. To be assigned within myip_v1_0. Possibly reg.
-	wire 	Done;										// matrix_multiply_0 -> myip_v1_0. 
-			
-				
-	// Total number of input data.
-	localparam NUMBER_OF_INPUT_WORDS  = A_elements + B_elements; // 2**A_depth_bits + 2**B_depth_bits = 12 for assignment 1
+// Word counts
+localparam NUMBER_OF_INPUT_WORDS  = `TOTAL_IN_WORDS;   // 531
+localparam NUMBER_OF_OUTPUT_WORDS = `TOTAL_OUT_WORDS;  // 64
 
-	// Total number of output data
-	localparam NUMBER_OF_OUTPUT_WORDS = RES_elements; // 2**RES_depth_bits = 2 for assignment 1
+// FSM states
+localparam Idle          = 3'd0;
+localparam Read_X        = 3'd1;
+localparam Read_WHID     = 3'd2;
+localparam Read_WOUT     = 3'd3;
+localparam Compute       = 3'd4;
+localparam Write_Outputs = 3'd5;
 
-	// Define the states of state machine (one hot encoding)
-	localparam Idle  = 4'b1000;
-	localparam Read_Inputs = 4'b0100;
-	localparam Compute = 4'b0010;
-	localparam Write_Outputs  = 4'b0001;
-	
-	localparam Read_A = 0;
-	localparam Read_B = 1;
+reg [2:0] state;
 
-	reg [3:0] state;
-    
-	// Accumulator to hold sum of inputs read at any point in time
-	reg [31:0] sum;
+// ---------------------------------------------------------------------------
+// Counters
+// ---------------------------------------------------------------------------
+reg [X_DEPTH_BITS-1:0]    x_counter;     // 0..511
+reg [WHID_DEPTH_BITS-1:0] whid_counter;  // 0..15
+reg [WOUT_DEPTH_BITS-1:0] wout_counter;  // 0..2
+reg [RES_DEPTH_BITS-1:0]  write_counter; // 0..63
 
-	// Counters to store the number inputs read & outputs written.
-	// Could be done using the same counter if reads and writes are not overlapped (i.e., no dataflow optimization)
-	// Left as separate for ease of debugging
-	reg [$clog2(NUMBER_OF_INPUT_WORDS) - 1:0] read_counter;
-	reg [$clog2(NUMBER_OF_OUTPUT_WORDS) - 1:0] write_counter;
-    
-    reg read_state;
-    // CAUTION:
-    // The sequence in which data are read in and written out should be
-    // consistent with the sequence they are written and read in the driver's hw_acc.c file
+// ---------------------------------------------------------------------------
+// X_RAM signals  (written by myip, read by mlp_accel)
+// ---------------------------------------------------------------------------
+reg                       X_write_en;
+reg  [X_DEPTH_BITS-1:0]   X_write_address;
+reg  [`DATA_WIDTH-1:0]    X_write_data_in;
+wire                      X_read_en;
+wire [X_DEPTH_BITS-1:0]   X_read_address;
+wire [`DATA_WIDTH-1:0]    X_read_data_out;
 
-	always @(posedge ACLK) 
-	begin
-	// implemented as a single-always Moore machine
-	// a Mealy machine that asserts S_AXIS_TREADY and captures S_AXIS_TDATA etc can save a clock cycle
+// ---------------------------------------------------------------------------
+// W_HID_RAM signals
+// ---------------------------------------------------------------------------
+reg                         WHID_write_en;
+reg  [WHID_DEPTH_BITS-1:0]  WHID_write_address;
+reg  [`DATA_WIDTH-1:0]      WHID_write_data_in;
+wire                        WHID_read_en;
+wire [WHID_DEPTH_BITS-1:0]  WHID_read_address;
+wire [`DATA_WIDTH-1:0]      WHID_read_data_out;
 
-		/****** Synchronous reset (active low) ******/
-		if (!ARESETN)
-		begin
-			// CAUTION: make sure your reset polarity is consistent with the system reset polarity
-			state        <= Idle;
-        end
-		else
-		begin
-			case (state)
+// ---------------------------------------------------------------------------
+// W_OUT_RAM signals
+// ---------------------------------------------------------------------------
+reg                         WOUT_write_en;
+reg  [WOUT_DEPTH_BITS-1:0]  WOUT_write_address;
+reg  [`DATA_WIDTH-1:0]      WOUT_write_data_in;
+wire                        WOUT_read_en;
+wire [WOUT_DEPTH_BITS-1:0]  WOUT_read_address;
+wire [`DATA_WIDTH-1:0]      WOUT_read_data_out;
 
-				Idle:
-				begin
-					read_counter 	<= 0;
-					write_counter 	<= 0;
-					sum          	<= 0;
-					S_AXIS_TREADY 	<= 0;
-					M_AXIS_TVALID 	<= 0;
-					M_AXIS_TLAST  	<= 0;
-					if (S_AXIS_TVALID == 1)
-					begin
-						state       	<= Read_Inputs;
-						S_AXIS_TREADY 	<= 1; 
-						read_state      <= Read_A;
-						// start receiving data once you go into Read_Inputs
-					end
-				end
+// ---------------------------------------------------------------------------
+// RES_RAM signals  (written by mlp_accel, read by myip)
+// ---------------------------------------------------------------------------
+wire                      RES_write_en;
+wire [RES_DEPTH_BITS-1:0] RES_write_address;
+wire [`DATA_WIDTH-1:0]    RES_write_data_in;
+reg                       RES_read_en;
+reg  [RES_DEPTH_BITS-1:0] RES_read_address;
+wire [`DATA_WIDTH-1:0]    RES_read_data_out;
 
-				Read_Inputs:
-				begin
-					S_AXIS_TREADY 	<= 1;
-					read_state <= (read_counter >= A_elements - 1) ? Read_B : Read_A;
-					if (S_AXIS_TVALID == 1) 
-					begin
-					   if (read_state == Read_A)
-					   begin
-					       A_write_en  <= 1;
-					       A_write_address <= read_counter;
-					       A_write_data_in <= S_AXIS_TDATA;
-					   end
-					   else // read_state == Read_B
-					   begin
-					       A_write_en <= 0;				       
-					       B_write_en  <= 1;
-					       B_write_address <= read_counter - A_elements;
-					       B_write_data_in <= S_AXIS_TDATA;
-					   end
-						// Coprocessor function (adding the numbers together) happens here (partly)
-						// If we are expecting a variable number of words, we should make use of S_AXIS_TLAST.
-						// Since the number of words we are expecting is fixed, we simply count and receive 
-						// the expected number (NUMBER_OF_INPUT_WORDS) instead.
-						if (read_counter == NUMBER_OF_INPUT_WORDS - 1)
-						begin
-							state      		<= Compute;
-							Start           <= 1;
-						end
-						else
-						begin
-							read_counter 	<= read_counter + 1;
-						end
-					end
-				end
-            
-				Compute:
-				begin
-				    S_AXIS_TREADY 	<= 0;
-                    read_counter    <= 0;
-                    A_write_en  <= 0;
-                    B_write_en  <= 0;
-                    // Start <= 0;  // Deassert Start after 1 cycle
-					// Coprocessor function to be implemented (matrix multiply) should be here. Right now, nothing happens here.
-					if (Done) begin
-						Start 		<= 0;
-						RES_read_en 		<= 1;
-						RES_read_address    <= 0;
-					end
-					else if (RES_read_en) begin
-					    state            <= Write_Outputs;
-                        RES_read_address <= 1;
-                        M_AXIS_TVALID    <= 0;
-                        write_counter <= 0;
-					end
-					// Possible to save a cycle by asserting M_AXIS_TVALID and presenting M_AXIS_TDATA just before going into 
-					// Write_Outputs state. However, need to adjust write_counter limits accordingly
-					// Alternatively, M_AXIS_TVALID and M_AXIS_TDATA can be asserted combinationally to save a cycle.
-				end
-				
-				Write_Outputs:
-				begin
-					RES_read_en 		<= 1;
+// ---------------------------------------------------------------------------
+// mlp_accel control
+// ---------------------------------------------------------------------------
+reg  Start;
+wire Done;
 
-					M_AXIS_TVALID <= 1;
-					M_AXIS_TDATA	<= RES_read_data_out;
+// ===========================================================================
+//  Main FSM
+// ===========================================================================
+always @(posedge ACLK) begin
 
-					if (M_AXIS_TREADY == 1) 
-					begin
-						if (write_counter == NUMBER_OF_OUTPUT_WORDS - 1)
-						begin
-							state	<= Idle;
-							M_AXIS_TLAST	<= 1;
-							RES_read_en <= 0;
-							// M_AXIS_TLAST, though optional in AXIS, is necessary in practice as AXI Stream FIFO and AXI DMA expects it.
-						end
-						else
-						begin
-						    RES_read_en <= 1;
-							RES_read_address	<= RES_read_address + 1;
-							write_counter <= write_counter + 1;
-						end
-					end
-				end
+    if (!ARESETN) begin
+        state <= Idle;
+    end else begin
 
-			endcase
-		end
-	end
-	   
-	// Connection to sub-modules / components for assignment 1
-	
-	memory_RAM 
-	#(
-		.width(`WIDTH), 
-		.depth_bits(A_depth_bits)
-	) A_RAM 
-	(
-		.clk(ACLK),
-		.write_en(A_write_en),
-		.write_address(A_write_address),
-		.write_data_in(A_write_data_in),
-		.read_en(A_read_en),    
-		.read_address(A_read_address),
-		.read_data_out(A_read_data_out)
-	);
-										
-										
-	memory_RAM 
-	#(
-		.width(`WIDTH), 
-		.depth_bits(B_depth_bits)
-	) B_RAM 
-	(
-		.clk(ACLK),
-		.write_en(B_write_en),
-		.write_address(B_write_address),
-		.write_data_in(B_write_data_in),
-		.read_en(B_read_en),    
-		.read_address(B_read_address),
-		.read_data_out(B_read_data_out)
-	);
-										
-										
-	memory_RAM 
-	#(
-		.width(`WIDTH), 
-		.depth_bits(RES_depth_bits)
-	) RES_RAM 
-	(
-		.clk(ACLK),
-		.write_en(RES_write_en),
-		.write_address(RES_write_address),
-		.write_data_in(RES_write_data_in),
-		.read_en(RES_read_en),    
-		.read_address(RES_read_address),
-		.read_data_out(RES_read_data_out)
-	);
-										
-	matrix_multiply 
-	#(
-		.width(`WIDTH), 
-		.A_depth_bits(A_depth_bits), 
-		.B_depth_bits(B_depth_bits), 
-		.RES_depth_bits(RES_depth_bits) 
-	) matrix_multiply_0
-	(									
-		.clk(ACLK),
-		.Start(Start),
-		.Done(Done),
-		
-		.A_read_en(A_read_en),
-		.A_read_address(A_read_address),
-		.A_read_data_out(A_read_data_out),
-		
-		.B_read_en(B_read_en),
-		.B_read_address(B_read_address),
-		.B_read_data_out(B_read_data_out),
-		
-		.RES_write_en(RES_write_en),
-		.RES_write_address(RES_write_address),
-		.RES_write_data_in(RES_write_data_in)
-	);
+        // ── Default: deassert write enables every cycle ──────────────────
+        X_write_en    <= 1'b0;
+        WHID_write_en <= 1'b0;
+        WOUT_write_en <= 1'b0;
+        Start         <= 1'b0;
+
+        case (state)
+
+            // ─────────────────────────────────────────────────────────────
+            Idle: begin
+                S_AXIS_TREADY <= 1'b0;
+                M_AXIS_TVALID <= 1'b0;
+                M_AXIS_TLAST  <= 1'b0;
+                RES_read_en   <= 1'b0;
+                x_counter     <= {X_DEPTH_BITS{1'b0}};
+                whid_counter  <= {WHID_DEPTH_BITS{1'b0}};
+                wout_counter  <= {WOUT_DEPTH_BITS{1'b0}};
+                write_counter <= {RES_DEPTH_BITS{1'b0}};
+                if (S_AXIS_TVALID) begin
+                    S_AXIS_TREADY <= 1'b1;
+                    state         <= Read_X;
+                end
+            end
+
+            // ─────────────────────────────────────────────────────────────
+            // Receive 512 bytes into X_RAM: X[r][c] at address r*8+c
+            // X[r][0] is sent as 0 (bias = 256 is handled implicitly in HW)
+            // ─────────────────────────────────────────────────────────────
+            Read_X: begin
+                S_AXIS_TREADY <= 1'b1;
+                if (S_AXIS_TVALID) begin
+                    X_write_en      <= 1'b1;
+                    X_write_address <= x_counter;
+                    X_write_data_in <= S_AXIS_TDATA[7:0];
+                    if (x_counter == {X_DEPTH_BITS{1'b1}}) begin  // 511
+                        state <= Read_WHID;
+                    end else begin
+                        x_counter <= x_counter + 1'b1;
+                    end
+                end
+            end
+
+            // ─────────────────────────────────────────────────────────────
+            // Receive 16 bytes into W_HID_RAM:
+            //   [0..7]  = W_HID[neuron=0][k=0..7]   (addr = 0..7)
+            //   [8..15] = W_HID[neuron=1][k=0..7]   (addr = 8..15)
+            // ─────────────────────────────────────────────────────────────
+            Read_WHID: begin
+                S_AXIS_TREADY <= 1'b1;
+                if (S_AXIS_TVALID) begin
+                    WHID_write_en      <= 1'b1;
+                    WHID_write_address <= whid_counter;
+                    WHID_write_data_in <= S_AXIS_TDATA[7:0];
+                    if (whid_counter == 4'd15) begin
+                        state <= Read_WOUT;
+                    end else begin
+                        whid_counter <= whid_counter + 1'b1;
+                    end
+                end
+            end
+
+            // ─────────────────────────────────────────────────────────────
+            // Receive 3 bytes into W_OUT_RAM:
+            //   [0] = bias weight (80)
+            //   [1] = hidden-neuron-0 weight (50)
+            //   [2] = hidden-neuron-1 weight (200)
+            // ─────────────────────────────────────────────────────────────
+            Read_WOUT: begin
+                S_AXIS_TREADY <= 1'b1;
+                if (S_AXIS_TVALID) begin
+                    WOUT_write_en      <= 1'b1;
+                    WOUT_write_address <= wout_counter;
+                    WOUT_write_data_in <= S_AXIS_TDATA[7:0];
+                    if (wout_counter == 2'd2) begin
+                        S_AXIS_TREADY <= 1'b0;
+                        Start         <= 1'b1;   // 1-cycle pulse to mlp_accel
+                        state         <= Compute;
+                    end else begin
+                        wout_counter <= wout_counter + 1'b1;
+                    end
+                end
+            end
+
+            // ─────────────────────────────────────────────────────────────
+            // Wait for mlp_accel to finish.
+            // Start was asserted for exactly 1 cycle (previous state).
+            // Mirrors the original lab's two-sub-state Compute pattern to
+            // pre-read RES[0] before entering Write_Outputs.
+            // ─────────────────────────────────────────────────────────────
+            Compute: begin
+                // Start deasserted by default at top of always block
+                if (Done) begin
+                    // Sub-state 1: RAM address 0, enable read
+                    RES_read_en     <= 1'b1;
+                    RES_read_address <= {RES_DEPTH_BITS{1'b0}};  // addr = 0
+                end else if (RES_read_en) begin
+                    // Sub-state 2: pre-advance address to 1;
+                    // by now read_data_out = RES[0] (set by RAM after sub-state 1)
+                    RES_read_address <= 6'd1;
+                    write_counter    <= {RES_DEPTH_BITS{1'b0}};
+                    M_AXIS_TVALID    <= 1'b0;
+                    state            <= Write_Outputs;
+                end
+            end
+
+            // ─────────────────────────────────────────────────────────────
+            // Stream 64 output words.
+            // When entering this state:
+            //   RES_read_address = 1  (pre-advanced)
+            //   RES_read_data_out = RES[0]
+            //   write_counter = 0
+            //
+            // Each cycle: present RES[counter] from read_data_out,
+            //             advance address = counter+2 (for counter+1 next cycle).
+            // At counter=62: addr wraps to 0 at counter=63 (don't care; RES[63]
+            //                is already in the pipeline from addr=63 at counter=61).
+            // ─────────────────────────────────────────────────────────────
+            Write_Outputs: begin
+                RES_read_en   <= 1'b1;
+                M_AXIS_TVALID <= 1'b1;
+                M_AXIS_TDATA  <= {24'b0, RES_read_data_out};   // zero-pad to 32-bit
+
+                if (M_AXIS_TREADY) begin
+                    if (write_counter == 6'd63) begin
+                        M_AXIS_TLAST <= 1'b1;
+                        RES_read_en  <= 1'b0;
+                        state        <= Idle;
+                    end else begin
+                        // advance address (will be addr for write_counter+1, i.e., +2 from current)
+                        RES_read_address <= write_counter + 6'd2;
+                        write_counter    <= write_counter + 1'b1;
+                    end
+                end
+            end
+
+            default: state <= Idle;
+
+        endcase
+    end
+end
+
+// ===========================================================================
+//  RAM Instantiations
+// ===========================================================================
+
+// X_RAM: 512 entries × 8-bit
+memory_RAM #(.width(`DATA_WIDTH), .depth_bits(X_DEPTH_BITS)) X_RAM (
+    .clk(ACLK),
+    .write_en(X_write_en),
+    .write_address(X_write_address),
+    .write_data_in(X_write_data_in),
+    .read_en(X_read_en),
+    .read_address(X_read_address),
+    .read_data_out(X_read_data_out)
+);
+
+// W_HID_RAM: 16 entries × 8-bit
+memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WHID_DEPTH_BITS)) WHID_RAM (
+    .clk(ACLK),
+    .write_en(WHID_write_en),
+    .write_address(WHID_write_address),
+    .write_data_in(WHID_write_data_in),
+    .read_en(WHID_read_en),
+    .read_address(WHID_read_address),
+    .read_data_out(WHID_read_data_out)
+);
+
+// W_OUT_RAM: 4 entries × 8-bit (only 3 used)
+memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WOUT_DEPTH_BITS)) WOUT_RAM (
+    .clk(ACLK),
+    .write_en(WOUT_write_en),
+    .write_address(WOUT_write_address),
+    .write_data_in(WOUT_write_data_in),
+    .read_en(WOUT_read_en),
+    .read_address(WOUT_read_address),
+    .read_data_out(WOUT_read_data_out)
+);
+
+// RES_RAM: 64 entries × 8-bit  (written by mlp_accel, read by myip)
+memory_RAM #(.width(`DATA_WIDTH), .depth_bits(RES_DEPTH_BITS)) RES_RAM (
+    .clk(ACLK),
+    .write_en(RES_write_en),
+    .write_address(RES_write_address),
+    .write_data_in(RES_write_data_in),
+    .read_en(RES_read_en),
+    .read_address(RES_read_address),
+    .read_data_out(RES_read_data_out)
+);
+
+// ===========================================================================
+//  mlp_accel Instantiation
+// ===========================================================================
+mlp_accel mlp_accel_0 (
+    .clk(ACLK),
+    .Start(Start),
+    .Done(Done),
+
+    // X_RAM read port
+    .x_rd_en(X_read_en),
+    .x_rd_addr(X_read_address),
+    .x_rd_data(X_read_data_out),
+
+    // W_HID_RAM read port
+    .whid_rd_en(WHID_read_en),
+    .whid_rd_addr(WHID_read_address),
+    .whid_rd_data(WHID_read_data_out),
+
+    // W_OUT_RAM read port
+    .wout_rd_en(WOUT_read_en),
+    .wout_rd_addr(WOUT_read_address),
+    .wout_rd_data(WOUT_read_data_out),
+
+    // RES_RAM write port
+    .res_wr_en(RES_write_en),
+    .res_wr_addr(RES_write_address),
+    .res_wr_data(RES_write_data_in)
+);
 
 endmodule
