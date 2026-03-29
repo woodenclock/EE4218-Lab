@@ -75,3 +75,5 @@ docs/Project/Project_Files/HARD_HDL/myip_1_0/example_designs/
 docs/Project/Project_Files/HARD_HDL/myip_1_0/bd/bd.tcl
 docs/Project/Project_Files/HARD_HDL/myip_1_0/component.xml
 docs/Project/Project_Files/HARD_HDL/myip_1_0/xgui/myip_v1_0.tcl
+docs/Project/Project_Files/HARD_HDL/Project_Vivado/Project.sim/
+docs/Project/Project_Files/HARD_HDL/Project_Vivado/Project.srcs/
