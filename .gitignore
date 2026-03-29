@@ -70,3 +70,8 @@ docs/Lab_1/Lab_1_Files/Lab_1/Lab_1.sim/
 docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/
 docs/Project/Project_Files/HARD_HDL/Project/Project.sim/
 docs/Project/Project_Files/HARD_HDL/Project/Project.srcs/
+docs/Project/Project_Files/HARD_HDL/myip_1_0/drivers/
+docs/Project/Project_Files/HARD_HDL/myip_1_0/example_designs/
+docs/Project/Project_Files/HARD_HDL/myip_1_0/bd/bd.tcl
+docs/Project/Project_Files/HARD_HDL/myip_1_0/component.xml
+docs/Project/Project_Files/HARD_HDL/myip_1_0/xgui/myip_v1_0.tcl
