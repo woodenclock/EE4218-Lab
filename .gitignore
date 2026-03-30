@@ -77,3 +77,5 @@ docs/Project/Project_Files/HARD_HDL/myip_1_0/component.xml
 docs/Project/Project_Files/HARD_HDL/myip_1_0/xgui/myip_v1_0.tcl
 docs/Project/Project_Files/HARD_HDL/Project_Vivado/Project.sim/
 docs/Project/Project_Files/HARD_HDL/Project_Vivado/Project.srcs/
+docs/Project/Project_Files/HARD_HLS/Project_Vitis/hls_component/
+docs/Project/Project_Files/HARD_HLS/Project_Vivado/Project/Project.srcs/
