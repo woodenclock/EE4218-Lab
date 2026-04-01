@@ -69,3 +69,12 @@ docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/sources_1/bd/design_1/ip/desi
 docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/sources_1/bd/design_1/ip/design_1_axi_fifo_mm_s_0_1/design_1_axi_fifo_mm_s_0_1.xci
 docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/sources_1/bd/design_1/design_1.bda
 docs/Lab_2/Lab_2_Files/Lab2-VivadoFiles/Lab_2.srcs/sources_1/bd/design_1/design_1.bd
+docs/Lab_4/Lab_4_Files/HDL_Non-Optimised/Lab_2.srcs/
+docs/Lab_4/Lab_4_Files/HDL_Optimised/Lab_4/Lab_4.srcs/
+docs/Lab_4/Lab_4_Files/HLS_Non-Optimised/hls_component/
+docs/Lab_4/Lab_4_Files/HLS_Optimised/myip_v1_0_HLS/
+docs/Lab_4/Lab_4_Files/pynq/coprocessor_hls_non-optimised/
+docs/Lab_4/Lab_4_Files/IP_canvases/
+docs/Lab_4.zip
+docs/Lab_4/balenaEtcher-2.1.4.Setup.exe
+docs/Lab_4/Ubuntu_Pynq_Kria_v1.img.zip
