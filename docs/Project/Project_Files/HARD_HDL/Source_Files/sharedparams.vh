@@ -44,7 +44,7 @@
 `define X_DEPTH_BITS            $clog2(`NUM_X_PACKETS)   // 2^9 = 512
 `define WHID_DEPTH_BITS         $clog2(`NUM_WHID_PACKETS)   // 2^4 = 16
 `define HID_RES_DEPTH_BITS      $clog2(`NUM_HID_RES_PACKETS)
-`define WOUT_DEPTH_BITS         $clog2(`NUM_WOUT_PACKETS)   // 2^2 = 4 (only 3 used)
+`define WOUT_DEPTH_BITS         1   // 2^2 = 4 (only 3 used)
 `define RES_DEPTH_BITS          $clog2(`NUM_RES_PACKETS)   // 2^6 = 64
 
 `endif // SHARED_PARAMS_VH

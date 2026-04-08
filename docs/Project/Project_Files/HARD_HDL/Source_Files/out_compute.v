@@ -38,7 +38,6 @@ always @(posedge clk) begin
         hid_res_rd_addr <= {`HID_RES_DEPTH_BITS{1'b0}};
         wout_rd_addr <= {`WOUT_DEPTH_BITS{1'b0}};
         running <= 1'b1;
-        Done <= 1'b0;
     end
     else if (running) begin
         set_s1 <= set_s1_out;

@@ -88,20 +88,12 @@ initial begin
     sig_lut[252]=8'd242; sig_lut[253]=8'd243; sig_lut[254]=8'd243; sig_lut[255]=8'd243;
 end
 
-    // localparam IDLE    = 3'd0;
-    // localparam WAIT    = 3'd1;
-    // localparam COMPUTE = 3'd2;
-    // localparam WRITE   = 3'd3;
-    // localparam DONE    = 3'd4;
-
     localparam WORDS_PER_ROW    = (`NUM_FEATURES / `AXI_PACKET_SIZE);
     localparam ROW_DEPTH_BITS   = $clog2(`NUM_SAMPLES);
     localparam SET_DEPTH_BITS   = $clog2(WORDS_PER_ROW);
     localparam HID_RES_BITS     = $clog2(`HID_RES_SIZE);
 
     reg [`DATA_WIDTH-1:0] hid_res [0:`HID_RES_SIZE - 1];
-
-    // reg [2:0]              state = IDLE;
 
     reg  [`DATA_WIDTH*2-1:0] out;
     
@@ -125,7 +117,6 @@ end
             x_rd_addr <= {`X_DEPTH_BITS{1'b0}};
             whid_rd_addr <= {`WHID_DEPTH_BITS{1'b0}};
             running <= 1'b1;
-            Done <= 1'b0;
         end
         else if (running) begin
             set_s1 <= set_s1_out;
