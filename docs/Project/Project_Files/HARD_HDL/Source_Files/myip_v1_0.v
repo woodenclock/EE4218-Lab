@@ -40,81 +40,73 @@ output reg [31:0] M_AXIS_TDATA;
 output reg      M_AXIS_TLAST;
 input           M_AXIS_TREADY;
 
-// ---------------------------------------------------------------------------
-// RAM sizes
-// ---------------------------------------------------------------------------
-localparam X_DEPTH_BITS    = `X_DEPTH_BITS;    // 9  → 512 entries
-localparam WHID_DEPTH_BITS = `WHID_DEPTH_BITS;  // 4  → 16  entries
-localparam WOUT_DEPTH_BITS = `WOUT_DEPTH_BITS;  // 2  → 4   entries (3 used)
-localparam RES_DEPTH_BITS  = `RES_DEPTH_BITS;   // 6  → 64  entries
-
-// Word counts
-localparam NUMBER_OF_INPUT_WORDS  = `TOTAL_IN_WORDS;   // 531
-localparam NUMBER_OF_OUTPUT_WORDS = `TOTAL_OUT_WORDS;  // 64
+// // ---------------------------------------------------------------------------
+// // RAM sizes
+// // ---------------------------------------------------------------------------
+// localparam X_DEPTH_BITS    = `X_DEPTH_BITS;    // 9  → 512 entries
+// localparam WHID_DEPTH_BITS = `WHID_DEPTH_BITS;  // 4  → 16  entries
+// localparam WOUT_DEPTH_BITS = `WOUT_DEPTH_BITS;  // 2  → 4   entries (3 used)
+// localparam RES_DEPTH_BITS  = `RES_DEPTH_BITS;   // 6  → 64  entries
 
 // FSM states
-localparam Idle          = 3'd0;
-localparam Read_X        = 3'd1;
-localparam Read_WHID     = 3'd2;
-localparam Read_WOUT     = 3'd3;
-localparam Compute       = 3'd4;
-localparam Write_Outputs = 3'd5;
+localparam  Idle          = 6'b000001;
+localparam  Read_X        = 6'b000010;
+localparam  Read_WHID     = 6'b000100;
+localparam  Read_WOUT     = 6'b001000;
+localparam  Compute       = 6'b010000;
+localparam  Write_Outputs = 6'b100000;
 
-reg [2:0] state;
+reg [5:0]   state;
+reg         Start;
+wire        Done;
 
 // ---------------------------------------------------------------------------
 // Counters
 // ---------------------------------------------------------------------------
-reg [X_DEPTH_BITS-1:0]    x_counter;     // 0..511
-reg [WHID_DEPTH_BITS-1:0] whid_counter;  // 0..15
-reg [WOUT_DEPTH_BITS-1:0] wout_counter;  // 0..2
-reg [RES_DEPTH_BITS-1:0]  write_counter; // 0..63
+reg [`X_DEPTH_BITS-1:0]         x_counter;     // 0..511
+reg [`WHID_DEPTH_BITS-1:0]      whid_counter;  // 0..15
+reg [`WOUT_DEPTH_BITS-1:0]      wout_counter;  // 0..2
+reg [`RES_DEPTH_BITS-1:0]       write_counter; // 0..63
 
-// ---------------------------------------------------------------------------
-// X_RAM signals  (written by myip, read by mlp_accel)
-// ---------------------------------------------------------------------------
-reg                       X_write_en;
-reg  [X_DEPTH_BITS-1:0]   X_write_address;
-reg  [`DATA_WIDTH-1:0]    X_write_data_in;
-wire                      X_read_en;
-wire [X_DEPTH_BITS-1:0]   X_read_address;
-wire [`DATA_WIDTH-1:0]    X_read_data_out;
+//---------------------------------------------------------------------------
+//X_RAM signals  (written by myip, read by mlp_accel)
+//---------------------------------------------------------------------------
+reg                             X_write_en;
+reg  [`X_DEPTH_BITS-1:0]        X_write_address;
+reg  [`AXI_DATA_WIDTH-1:0]      X_write_data_in;
+wire                            X_read_en;
+wire [`X_DEPTH_BITS-1:0]        X_read_address;
+wire [`AXI_DATA_WIDTH-1:0]      X_read_data_out;
 
-// ---------------------------------------------------------------------------
-// W_HID_RAM signals
-// ---------------------------------------------------------------------------
-reg                         WHID_write_en;
-reg  [WHID_DEPTH_BITS-1:0]  WHID_write_address;
-reg  [`DATA_WIDTH-1:0]      WHID_write_data_in;
-wire                        WHID_read_en;
-wire [WHID_DEPTH_BITS-1:0]  WHID_read_address;
-wire [`DATA_WIDTH-1:0]      WHID_read_data_out;
+//---------------------------------------------------------------------------
+//W_HID_RAM signals
+//---------------------------------------------------------------------------
+reg                             WHID_write_en;
+reg  [`WHID_DEPTH_BITS-1:0]     WHID_write_address;
+reg  [`AXI_DATA_WIDTH-1:0]      WHID_write_data_in;
+wire                            WHID_read_en;
+wire [`WHID_DEPTH_BITS-1:0]     WHID_read_address;
+wire [`AXI_DATA_WIDTH-1:0]      WHID_read_data_out;
 
-// ---------------------------------------------------------------------------
-// W_OUT_RAM signals
-// ---------------------------------------------------------------------------
-reg                         WOUT_write_en;
-reg  [WOUT_DEPTH_BITS-1:0]  WOUT_write_address;
-reg  [`DATA_WIDTH-1:0]      WOUT_write_data_in;
-wire                        WOUT_read_en;
-wire [WOUT_DEPTH_BITS-1:0]  WOUT_read_address;
-wire [`DATA_WIDTH-1:0]      WOUT_read_data_out;
+//---------------------------------------------------------------------------
+//W_OUT_RAM signals
+//---------------------------------------------------------------------------
+reg                             WOUT_write_en;
+reg  [`WOUT_DEPTH_BITS-1:0]     WOUT_write_address;
+reg  [`AXI_DATA_WIDTH-1:0]      WOUT_write_data_in;
+wire                            WOUT_read_en;
+wire [`WOUT_DEPTH_BITS-1:0]     WOUT_read_address;
+wire [`AXI_DATA_WIDTH-1:0]      WOUT_read_data_out;
 
-// ---------------------------------------------------------------------------
-// RES_RAM signals  (written by mlp_accel, read by myip)
-// ---------------------------------------------------------------------------
-wire                      RES_write_en;
-wire [RES_DEPTH_BITS-1:0] RES_write_address;
-wire [`DATA_WIDTH-1:0]    RES_write_data_in;
-reg                       RES_read_en;
-reg  [RES_DEPTH_BITS-1:0] RES_read_address;
-wire [`DATA_WIDTH-1:0]    RES_read_data_out;
-
-// ---------------------------------------------------------------------------
-// mlp_accel control
-// ---------------------------------------------------------------------------
-reg  Start;
-wire Done;
+//---------------------------------------------------------------------------
+//RES_RAM signals  (written by mlp_accel, read by myip)
+//---------------------------------------------------------------------------
+wire                            RES_write_en;
+wire [`RES_DEPTH_BITS-1:0]      RES_write_address;
+wire [`AXI_DATA_WIDTH-1:0]      RES_write_data_in;
+reg                             RES_read_en;
+reg  [`RES_DEPTH_BITS-1:0]      RES_read_address;
+wire [`AXI_DATA_WIDTH-1:0]      RES_read_data_out;
 
 // ===========================================================================
 //  Main FSM
@@ -126,10 +118,10 @@ always @(posedge ACLK) begin
     end else begin
 
         // ── Default: deassert write enables every cycle ──────────────────
+        Start         <= 1'b0;
         X_write_en    <= 1'b0;
         WHID_write_en <= 1'b0;
         WOUT_write_en <= 1'b0;
-        Start         <= 1'b0;
 
         case (state)
 
@@ -139,10 +131,10 @@ always @(posedge ACLK) begin
                 M_AXIS_TVALID <= 1'b0;
                 M_AXIS_TLAST  <= 1'b0;
                 RES_read_en   <= 1'b0;
-                x_counter     <= {X_DEPTH_BITS{1'b0}};
-                whid_counter  <= {WHID_DEPTH_BITS{1'b0}};
-                wout_counter  <= {WOUT_DEPTH_BITS{1'b0}};
-                write_counter <= {RES_DEPTH_BITS{1'b0}};
+                x_counter     <= {`X_DEPTH_BITS{1'b0}};
+                whid_counter  <= {`WHID_DEPTH_BITS{1'b0}};
+                wout_counter  <= {`WOUT_DEPTH_BITS{1'b0}};
+                write_counter <= {`RES_DEPTH_BITS{1'b0}};
                 if (S_AXIS_TVALID) begin
                     S_AXIS_TREADY <= 1'b1;
                     state         <= Read_X;
@@ -158,8 +150,8 @@ always @(posedge ACLK) begin
                 if (S_AXIS_TVALID) begin
                     X_write_en      <= 1'b1;
                     X_write_address <= x_counter;
-                    X_write_data_in <= S_AXIS_TDATA[7:0];
-                    if (x_counter == {X_DEPTH_BITS{1'b1}}) begin  // 511
+                    X_write_data_in <= S_AXIS_TDATA;
+                    if (x_counter == `NUM_X_PACKETS - 1) begin  // 511
                         state <= Read_WHID;
                     end else begin
                         x_counter <= x_counter + 1'b1;
@@ -167,18 +159,13 @@ always @(posedge ACLK) begin
                 end
             end
 
-            // ─────────────────────────────────────────────────────────────
-            // Receive 16 bytes into W_HID_RAM:
-            //   [0..7]  = W_HID[neuron=0][k=0..7]   (addr = 0..7)
-            //   [8..15] = W_HID[neuron=1][k=0..7]   (addr = 8..15)
-            // ─────────────────────────────────────────────────────────────
             Read_WHID: begin
                 S_AXIS_TREADY <= 1'b1;
                 if (S_AXIS_TVALID) begin
                     WHID_write_en      <= 1'b1;
                     WHID_write_address <= whid_counter;
-                    WHID_write_data_in <= S_AXIS_TDATA[7:0];
-                    if (whid_counter == 4'd15) begin
+                    WHID_write_data_in <= S_AXIS_TDATA;
+                    if (whid_counter == `NUM_WHID_PACKETS - 1) begin
                         state <= Read_WOUT;
                     end else begin
                         whid_counter <= whid_counter + 1'b1;
@@ -197,10 +184,10 @@ always @(posedge ACLK) begin
                 if (S_AXIS_TVALID) begin
                     WOUT_write_en      <= 1'b1;
                     WOUT_write_address <= wout_counter;
-                    WOUT_write_data_in <= S_AXIS_TDATA[7:0];
-                    if (wout_counter == 2'd2) begin
+                    WOUT_write_data_in <= S_AXIS_TDATA;
+                    if (wout_counter == `NUM_WOUT_PACKETS - 1) begin
                         S_AXIS_TREADY <= 1'b0;
-                        Start         <= 1'b1;   // 1-cycle pulse to mlp_accel
+                        Start         <= 1'b1;   // 1-cycle signal to mlp_accel
                         state         <= Compute;
                     end else begin
                         wout_counter <= wout_counter + 1'b1;
@@ -217,14 +204,7 @@ always @(posedge ACLK) begin
             Compute: begin
                 // Start deasserted by default at top of always block
                 if (Done) begin
-                    // Sub-state 1: RAM address 0, enable read
-                    RES_read_en     <= 1'b1;
-                    RES_read_address <= {RES_DEPTH_BITS{1'b0}};  // addr = 0
-                end else if (RES_read_en) begin
-                    // Sub-state 2: pre-advance address to 1;
-                    // by now read_data_out = RES[0] (set by RAM after sub-state 1)
-                    RES_read_address <= 6'd1;
-                    write_counter    <= {RES_DEPTH_BITS{1'b0}};
+                    write_counter    <= {`RES_DEPTH_BITS{1'b0}};
                     M_AXIS_TVALID    <= 1'b0;
                     state            <= Write_Outputs;
                 end
@@ -245,10 +225,10 @@ always @(posedge ACLK) begin
             Write_Outputs: begin
                 RES_read_en   <= 1'b1;
                 M_AXIS_TVALID <= 1'b1;
-                M_AXIS_TDATA  <= {24'b0, RES_read_data_out};   // zero-pad to 32-bit
+                M_AXIS_TDATA  <= RES_read_data_out;   // zero-pad to 32-bit
 
                 if (M_AXIS_TREADY) begin
-                    if (write_counter == 6'd63) begin
+                    if (write_counter == `NUM_RES_PACKETS - 1) begin
                         M_AXIS_TLAST <= 1'b1;
                         RES_read_en  <= 1'b0;
                         state        <= Idle;
@@ -259,19 +239,18 @@ always @(posedge ACLK) begin
                     end
                 end
             end
-
             default: state <= Idle;
-
         endcase
     end
 end
+
 
 // ===========================================================================
 //  RAM Instantiations
 // ===========================================================================
 
 // X_RAM: 512 entries × 8-bit
-memory_RAM #(.width(`DATA_WIDTH), .depth_bits(X_DEPTH_BITS)) X_RAM (
+memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`X_DEPTH_BITS)) X_RAM (
     .clk(ACLK),
     .write_en(X_write_en),
     .write_address(X_write_address),
@@ -282,7 +261,7 @@ memory_RAM #(.width(`DATA_WIDTH), .depth_bits(X_DEPTH_BITS)) X_RAM (
 );
 
 // W_HID_RAM: 16 entries × 8-bit
-memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WHID_DEPTH_BITS)) WHID_RAM (
+memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`WHID_DEPTH_BITS)) WHID_RAM (
     .clk(ACLK),
     .write_en(WHID_write_en),
     .write_address(WHID_write_address),
@@ -293,7 +272,7 @@ memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WHID_DEPTH_BITS)) WHID_RAM (
 );
 
 // W_OUT_RAM: 4 entries × 8-bit (only 3 used)
-memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WOUT_DEPTH_BITS)) WOUT_RAM (
+memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`WOUT_DEPTH_BITS)) WOUT_RAM (
     .clk(ACLK),
     .write_en(WOUT_write_en),
     .write_address(WOUT_write_address),
@@ -304,7 +283,7 @@ memory_RAM #(.width(`DATA_WIDTH), .depth_bits(WOUT_DEPTH_BITS)) WOUT_RAM (
 );
 
 // RES_RAM: 64 entries × 8-bit  (written by mlp_accel, read by myip)
-memory_RAM #(.width(`DATA_WIDTH), .depth_bits(RES_DEPTH_BITS)) RES_RAM (
+memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`RES_DEPTH_BITS)) RES_RAM (
     .clk(ACLK),
     .write_en(RES_write_en),
     .write_address(RES_write_address),
@@ -313,6 +292,7 @@ memory_RAM #(.width(`DATA_WIDTH), .depth_bits(RES_DEPTH_BITS)) RES_RAM (
     .read_address(RES_read_address),
     .read_data_out(RES_read_data_out)
 );
+
 
 // ===========================================================================
 //  mlp_accel Instantiation

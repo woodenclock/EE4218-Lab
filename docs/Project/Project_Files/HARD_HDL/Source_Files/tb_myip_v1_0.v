@@ -7,7 +7,7 @@
 --                531 input words (X + W_HID + W_OUT), 64 output words
 ----------------------------------------------------------------------------------
 */
-
+`include "sharedparams.vh"
 module tb_myip_v1_0();
 
     reg                    ACLK = 0;
@@ -35,17 +35,15 @@ module tb_myip_v1_0();
     );
 
     // ── Test parameters ─────────────────────────────────────────────────────
-    localparam NUMBER_OF_INPUT_WORDS  = 531;  // 512 (X) + 16 (W_HID) + 3 (W_OUT)
-    localparam NUMBER_OF_OUTPUT_WORDS = 64;
+    localparam NUMBER_OF_INPUT_WORDS  = `NUM_X_PACKETS + `NUM_WHID_PACKETS + `NUM_WOUT_PACKETS;  // 512 / 4 (X) + 16 / 4 (W_HID) + 3 / 4(W_OUT)
+    localparam NUMBER_OF_OUTPUT_WORDS = `NUM_RES_PACKETS;
     localparam NUMBER_OF_TEST_VECTORS = 1;
-    localparam width = 8;
+    localparam width = `AXI_DATA_WIDTH;
 
     reg [width-1:0] test_input_memory
         [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_INPUT_WORDS-1];
-    reg [width-1:0] test_result_expected_memory
-        [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
-    reg [width-1:0] result_memory
-        [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
+    reg [width-1:0] test_result_expected_memory [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
+    reg result_memory [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
 
     integer word_cnt, test_case_cnt;
     reg success = 1'b1;
@@ -58,8 +56,8 @@ module tb_myip_v1_0();
 
     initial begin
         $display("Loading Memory...");
-        $readmemh("test_input_new.mem",          test_input_memory);
-        $readmemh("test_result_expected_new.mem", test_result_expected_memory);
+        $readmemh("nn_test_input.mem",          test_input_memory);
+        $readmemh("nn_test_result_expected.mem", test_result_expected_memory);
 
         #25
         ARESETN      = 1'b0;
