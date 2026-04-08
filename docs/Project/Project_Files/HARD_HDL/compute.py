@@ -42,3 +42,20 @@ hex_sigmoid = np.vectorize(lambda x: f"{int(x):02X}")(sigmoid_result)
 print("After Sigmoid (Hex):")
 for row in hex_sigmoid:
     print(" ".join(row))
+
+hidden_sig = sigmoid_result.astype(int)
+packed_lines = []
+for i in range(0, len(hidden_sig), 4):  # step 4 rows
+    # Take 4 rows
+    rows = hidden_sig[i:i+4]
+    # flatten 4x2 → 8 values
+    vals = rows.flatten()
+    # pack into 32-bit word (big endian): [v7 v6 v5 v4 v3 v2 v1 v0]
+    # Each value is 8-bit → 8*4 = 32-bit, need 2 words for 8 values
+    word1 = (vals[3] << 24) | (vals[2] << 16) | (vals[1] << 8) | vals[0]
+    word2 = (vals[7] << 24) | (vals[6] << 16) | (vals[5] << 8) | vals[4]
+    packed_lines.append(f"{word1:08X}\n{word2:08X}")
+
+print("Packed hidden layer (8 hex digits per line) =")
+for line in packed_lines:
+    print(line)

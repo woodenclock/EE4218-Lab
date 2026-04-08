@@ -5,7 +5,7 @@ module hid_compute
 	(
 		input                                   clk,										
 		input                                   Start,										
-		output reg                              Done = 1'b1,									
+		output reg                              Done,									
 		
         output reg                              x_rd_en,
         output reg [`X_DEPTH_BITS-1:0]          x_rd_addr,
@@ -97,6 +97,7 @@ end
     localparam WORDS_PER_ROW    = (`NUM_FEATURES / `AXI_PACKET_SIZE);
     localparam ROW_DEPTH_BITS   = $clog2(`NUM_SAMPLES);
     localparam SET_DEPTH_BITS   = $clog2(WORDS_PER_ROW);
+    localparam HID_RES_BITS     = $clog2(`HID_RES_SIZE);
 
     reg [`DATA_WIDTH-1:0] hid_res [0:`HID_RES_SIZE - 1];
 
@@ -124,6 +125,7 @@ end
             x_rd_addr <= {`X_DEPTH_BITS{1'b0}};
             whid_rd_addr <= {`WHID_DEPTH_BITS{1'b0}};
             running <= 1'b1;
+            Done <= 1'b0;
         end
         else if (running) begin
             set_s1 <= set_s1_out;
@@ -206,7 +208,15 @@ end
         end
     end
     wire [`DATA_WIDTH-1:0] res = sig_lut[acc >> 8];
-
+    
+    wire [HID_RES_BITS - 1:0] idx3 = (row_s3)<<1;
+    wire [HID_RES_BITS - 1 + 1:0] idx2 = ((row_s3 - 1)<<1) + 1;
+    wire [HID_RES_BITS - 1 + 1:0] idx1 = (row_s3 - 1)<<1;
+    
+    wire [`DATA_WIDTH-1:0] res3 = hid_res[idx3];
+    wire [`DATA_WIDTH-1:0] res2 = hid_res[idx2];
+    wire [`DATA_WIDTH-1:0] res1 = hid_res[idx1];
+    
     // stage 4 write outputs
     always @(posedge clk) begin
         Done <= 1'b0;
@@ -219,103 +229,12 @@ end
             if (neuron_s3 >= 1'b1 && row_s3[0] == 1'b1) begin 
                 hid_res_wr_en <= 1'b1;
                 hid_res_wr_addr <= (row_s3 >> 1);
-                hid_res_wr_data <= {res, hid_res[(row_s3)<<1], hid_res[(row_s3 - 1)<<1 + 1], hid_res[(row_s3 - 1)<<1]};
+                hid_res_wr_data <= {res, res3, res2, res1};
                 if (row_s3 >= 63) begin
                     Done <= 1'b1;
                 end
             end
         end
     end
-
-    // always @(posedge clk) begin
-    //     Done         <= 1'b0;
-    //     hid_res_wr_en <= 1'b0;
-
-    //     case (state)
-    //         IDLE: begin
-    //             x_rd_en <= 1'b0;
-    //             whid_rd_en <= 1'b0;
-    //             row <= {ROW_DEPTH_BITS{1'b0}};
-    //             set <= {set_DEPTH_BITS{1'b0}};
-    //             neuron <= 1'b0;
-    //             acc <= {(2*`DATA_WIDTH){1'b0}};
-    //             valid <= 1'b0;
-
-    //             if (Start) begin
-    //                 x_rd_en <= 1'b1;
-    //                 whid_rd_en <= 1'b1;
-    //                 x_rd_addr <= {`X_DEPTH_BITS{1'b0}};
-    //                 whid_rd_addr <= {`WHID_DEPTH_BITS{1'b0}};
-    //                 state <= WAIT;
-    //             end
-    //         end
-
-    //         WAIT: begin
-    //             state <= COMPUTE;
-    //             x_rd_addr <= x_rd_addr + 1;
-    //         end
-
-    //         COMPUTE: begin
-    //             acc <= acc + sum;
-    //             set <= set + 1;
-    //             row <= set ? row + 1 : row;
-    //             neuron <= (row >= 63) ? 1 : 0;
-
-    //             if (set == 1) begin
-    //                 set <= {set_DEPTH_BITS{1'b0}};
-    //                 if (row >= 63) begin
-
-    //                 end
-    //             end else begin
-    //                 set <= set + 1;
-
-    //                 // issue next address
-    //                 x_rd_addr <= x_rd_addr + 1;
-    //                 whid_rd_addr <= whid_rd_addr + 1;
-    //                 state <= COMPUTE;
-    //             end
-    //         end
-
-    //         WRITE: begin
-    //             acc <= {(2*`DATA_WIDTH){1'b0}};
-    //             res_buf <= res_buf + acc;
-
-    //             if (neuron == 1'b0) begin
-    //                 res_buf      <= sig_lut[acc >> 8];
-    //                 neuron       <= 1'b1;
-    //                 x_rd_addr    <= row * WORDS_PER_ROW;
-    //                 whid_rd_addr <= WORDS_PER_ROW;
-    //                 state        <= WAIT;
-    //             end else begin
-    //                 if (row[0] == 1'b0) begin
-    //                     prev_n0 <= res_buf;
-    //                     prev_n1 <= sig_lut[acc >> 8];
-    //                 end else begin
-    //                     hid_res_wr_en   <= 1'b1;
-    //                     hid_res_wr_addr <= row >> 1;
-    //                     hid_res_wr_data <= {sig_lut[acc >> 8], res_buf, prev_n1, prev_n0};
-    //                 end
-
-    //                 if (row == `NUM_SAMPLES - 1) begin
-    //                     state <= DONE;
-    //                 end else begin
-    //                     row          <= row + 1;
-    //                     neuron       <= 1'b0;
-    //                     x_rd_addr    <= (row + 1) * WORDS_PER_ROW;
-    //                     whid_rd_addr <= {`WHID_DEPTH_BITS{1'b0}};
-    //                     state        <= WAIT;
-    //                 end
-    //             end
-    //         end
-
-    //         DONE: begin
-    //             Done  <= 1'b1;
-    //             state <= IDLE;
-    //         end
-
-    //         default: state <= IDLE;
-
-    //     endcase
-    // end
 
 endmodule

@@ -45,9 +45,7 @@ module mlp_accel (
     input      [`AXI_DATA_WIDTH-1:0]  wout_rd_data,
 
     // RES_RAM write (64 entries)
-    output         res_wr_en,
-    output  [`RES_DEPTH_BITS-1:0]  res_wr_addr,
-    output  [`AXI_DATA_WIDTH-1:0]  res_wr_data
+    output  [`NUM_SAMPLES-1:0] RES
 );
 
 // ---------------------------------------------------------------------------
@@ -69,6 +67,9 @@ reg [2:0] state = IDLE;
 reg hid_start;
 wire hid_done;
 
+reg out_start;
+wire out_done;
+
 // Counters
 reg [`NUM_SAMPLES:0] row;      // 0..63 
 reg       neuron;   // 0..1
@@ -84,7 +85,6 @@ wire [`AXI_DATA_WIDTH-1:0] hid_res_rd_data;
 // ---------------------------------------------------------------------------
 // Main FSM
 // ---------------------------------------------------------------------------
-integer i;
 always @(posedge clk) begin
     Done <= 1'b0;
     hid_start <= 1'b0;
@@ -99,28 +99,32 @@ always @(posedge clk) begin
         HID_COMPUTE: begin
             if (hid_done) begin
                 state <= OUT_COMPUTE;
+                out_start <= 1'b1;
             end
         end
         OUT_COMPUTE: begin
-            state <= IDLE;
+            if (out_start) begin
+                state <= IDLE;
+            end
         end
         default: state <= IDLE; 
     endcase
 end
 
 hid_compute hid_compute0 (
-        .clk(clk),	
-		.Start(hid_start),
-		.Done(hid_done),
-        .x_rd_en(x_rd_en),
-        .x_rd_addr(x_rd_addr),
-        .x_rd_data(x_rd_data),
-		.whid_rd_en(whid_rd_en),
-        .whid_rd_addr(whid_rd_addr),
-        .whid_rd_data(whid_rd_data),
-		.hid_res_wr_en(hid_res_wr_en),
-        .hid_res_wr_addr(hid_res_wr_addr),
-        .hid_res_wr_data(hid_res_wr_data));
+    .clk(clk),	
+    .Start(hid_start),
+    .Done(hid_done),
+    .x_rd_en(x_rd_en),
+    .x_rd_addr(x_rd_addr),
+    .x_rd_data(x_rd_data),
+    .whid_rd_en(whid_rd_en),
+    .whid_rd_addr(whid_rd_addr),
+    .whid_rd_data(whid_rd_data),
+    .hid_res_wr_en(hid_res_wr_en),
+    .hid_res_wr_addr(hid_res_wr_addr),
+    .hid_res_wr_data(hid_res_wr_data)
+);
 
 memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`HID_RES_DEPTH_BITS)) HID_RES_RAM (
     .clk(clk),

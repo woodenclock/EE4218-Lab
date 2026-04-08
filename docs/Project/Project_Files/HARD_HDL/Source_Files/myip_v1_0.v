@@ -101,12 +101,7 @@ wire [`AXI_DATA_WIDTH-1:0]      WOUT_read_data_out;
 //---------------------------------------------------------------------------
 //RES_RAM signals  (written by mlp_accel, read by myip)
 //---------------------------------------------------------------------------
-wire                            RES_write_en;
-wire [`RES_DEPTH_BITS-1:0]      RES_write_address;
-wire [`AXI_DATA_WIDTH-1:0]      RES_write_data_in;
-reg                             RES_read_en;
-reg  [`RES_DEPTH_BITS-1:0]      RES_read_address;
-wire [`AXI_DATA_WIDTH-1:0]      RES_read_data_out;
+wire [`NUM_SAMPLES-1:0]         RES;
 
 // ===========================================================================
 //  Main FSM
@@ -130,7 +125,6 @@ always @(posedge ACLK) begin
                 S_AXIS_TREADY <= 1'b0;
                 M_AXIS_TVALID <= 1'b0;
                 M_AXIS_TLAST  <= 1'b0;
-                RES_read_en   <= 1'b0;
                 x_counter     <= {`X_DEPTH_BITS{1'b0}};
                 whid_counter  <= {`WHID_DEPTH_BITS{1'b0}};
                 wout_counter  <= {`WOUT_DEPTH_BITS{1'b0}};
@@ -223,18 +217,14 @@ always @(posedge ACLK) begin
             //                is already in the pipeline from addr=63 at counter=61).
             // ─────────────────────────────────────────────────────────────
             Write_Outputs: begin
-                RES_read_en   <= 1'b1;
                 M_AXIS_TVALID <= 1'b1;
-                M_AXIS_TDATA  <= RES_read_data_out;   // zero-pad to 32-bit
+                M_AXIS_TDATA  <= RES[write_counter*32 +: 32];   // zero-pad to 32-bit
 
                 if (M_AXIS_TREADY) begin
                     if (write_counter == `NUM_RES_PACKETS - 1) begin
                         M_AXIS_TLAST <= 1'b1;
-                        RES_read_en  <= 1'b0;
                         state        <= Idle;
                     end else begin
-                        // advance address (will be addr for write_counter+1, i.e., +2 from current)
-                        RES_read_address <= write_counter + 6'd2;
                         write_counter    <= write_counter + 1'b1;
                     end
                 end
@@ -282,18 +272,6 @@ memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`WOUT_DEPTH_BITS)) WOUT_RAM (
     .read_data_out(WOUT_read_data_out)
 );
 
-// RES_RAM: 64 entries × 8-bit  (written by mlp_accel, read by myip)
-memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`RES_DEPTH_BITS)) RES_RAM (
-    .clk(ACLK),
-    .write_en(RES_write_en),
-    .write_address(RES_write_address),
-    .write_data_in(RES_write_data_in),
-    .read_en(RES_read_en),
-    .read_address(RES_read_address),
-    .read_data_out(RES_read_data_out)
-);
-
-
 // ===========================================================================
 //  mlp_accel Instantiation
 // ===========================================================================
@@ -318,9 +296,7 @@ mlp_accel mlp_accel_0 (
     .wout_rd_data(WOUT_read_data_out),
 
     // RES_RAM write port
-    .res_wr_en(RES_write_en),
-    .res_wr_addr(RES_write_address),
-    .res_wr_data(RES_write_data_in)
+    .RES(RES)
 );
 
 endmodule
