@@ -24,11 +24,11 @@
 `define NUM_WHID_PACKETS        ((`WHID_SIZE + `AXI_PACKET_SIZE - 1) / `AXI_PACKET_SIZE)   // 4
 `define NUM_HID_RES_PACKETS     ((`HID_RES_SIZE + `AXI_PACKET_SIZE - 1) / `AXI_PACKET_SIZE) 
 `define NUM_WOUT_PACKETS        ((`WOUT_SIZE + `AXI_PACKET_SIZE - 1) / `AXI_PACKET_SIZE)   // 1
-`define NUM_RES_PACKETS         ((`NUM_SAMPLES / `AXI_PACKET_SIZE))                         // 8
+`define NUM_RES_PACKETS         ((`NUM_SAMPLES / `AXI_DATA_WIDTH))                         // 8
 
 `define X_ADDRESS_WIDTH         $clog2(`X_SIZE)
 `define WHID_ADDRESS_WIDTH      $clog2(`WHID_SIZE)
-`define WOUT_ADDRESS_WIDTH      $clog2(`WOUT_SIZE)
+`define WOUT_ADDRESS_WIDTH      1
 `define RES_ADDRESS_WIDTH       $clog2(`NUM_SAMPLES)
 
 // ── AXI-Stream word counts ────────────────────────────────────────────────────

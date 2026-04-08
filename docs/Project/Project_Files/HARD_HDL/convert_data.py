@@ -4,7 +4,7 @@ WHID_csv = '../w_hid.csv'
 WOUT_csv = '../w_out.csv'
 labels_csv = "../labels.csv"
 test_input_file = 'nn_test_input.mem'
-test_output_file = 'nn_test_result_expected.mem'
+# test_output_file = 'nn_test_result_expected.mem'
 bias = 'FF'
 
 with open(test_input_file, 'w') as word_file:
@@ -58,18 +58,18 @@ with open(test_input_file, 'w') as word_file:
             word += f"{numbers[2-i]:02X}"
         word_file.write(word + "\n")
 
-with open(test_output_file, 'w') as word_file:
-    word_file.write("// output labels \n")
-    with open(labels_csv, 'r') as labels:
-        count = 0
-        numbers = []
-        word = ""
-        for line in labels:
-            numbers.append(line.strip())
-            if len(numbers) >= 32:
-                for i in range(32):
-                    word += numbers[31-i]
-                word = f'{int(word, 2):08X}'
-                word_file.write(word + "\n")
-                word = ""
-                numbers = []
+# with open(test_output_file, 'w') as word_file:
+#     word_file.write("// output labels \n")
+#     with open(labels_csv, 'r') as labels:
+#         count = 0
+#         numbers = []
+#         word = ""
+#         for line in labels:
+#             numbers.append(line.strip())
+#             if len(numbers) >= 32:
+#                 for i in range(32):
+#                     word += numbers[31-i]
+#                 word = f'{int(word, 2):08X}'
+#                 word_file.write(word + "\n")
+#                 word = ""
+#                 numbers = []

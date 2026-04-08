@@ -49,12 +49,6 @@ module mlp_accel (
 );
 
 // ---------------------------------------------------------------------------
-// Internal intermediate storage (combinational/registered reads, no wait)
-// ---------------------------------------------------------------------------
-// HID_RES[row*2 + neuron]  – hidden layer result (after divide-by-256 AND sigmoid)
-reg [`AXI_DATA_WIDTH - 1:0] HID_RES [`HID_RES_SIZE - 1:0];
-
-// ---------------------------------------------------------------------------
 // FSM state encoding
 // ---------------------------------------------------------------------------
 localparam IDLE              = 3'b001;
@@ -79,7 +73,7 @@ wire hid_res_wr_en;
 wire [`HID_RES_DEPTH_BITS-1:0] hid_res_wr_addr;
 wire [`AXI_DATA_WIDTH-1:0] hid_res_wr_data;
 wire hid_res_rd_en;
-wire [`HID_RES_DEPTH_BITS-1:0] hid_res_read_addr;
+wire [`HID_RES_DEPTH_BITS-1:0] hid_res_rd_addr;
 wire [`AXI_DATA_WIDTH-1:0] hid_res_rd_data;
 
 // ---------------------------------------------------------------------------
@@ -88,6 +82,7 @@ wire [`AXI_DATA_WIDTH-1:0] hid_res_rd_data;
 always @(posedge clk) begin
     Done <= 1'b0;
     hid_start <= 1'b0;
+    out_start <= 1'b0;
 
     case (state) 
         IDLE: begin
@@ -103,8 +98,9 @@ always @(posedge clk) begin
             end
         end
         OUT_COMPUTE: begin
-            if (out_start) begin
+            if (out_done) begin
                 state <= IDLE;
+                Done <= 1'b1;
             end
         end
         default: state <= IDLE; 
@@ -126,13 +122,29 @@ hid_compute hid_compute0 (
     .hid_res_wr_data(hid_res_wr_data)
 );
 
+out_compute out_compute0 (
+    .clk(clk),										
+    .Start(out_start),										
+    .Done(out_done),									
+
+    .hid_res_rd_en(hid_res_rd_en),
+    .hid_res_rd_addr(hid_res_rd_addr),
+    .hid_res_rd_data(hid_res_rd_data),
+
+    .wout_rd_en(wout_rd_en),
+    .wout_rd_addr(wout_rd_addr),
+    .wout_rd_data(wout_rd_data),
+
+    .RES(RES)
+);
+
 memory_RAM #(.width(`AXI_DATA_WIDTH), .depth_bits(`HID_RES_DEPTH_BITS)) HID_RES_RAM (
     .clk(clk),
     .write_en(hid_res_wr_en),
     .write_address(hid_res_wr_addr),
     .write_data_in(hid_res_wr_data),
     .read_en(hid_res_rd_en),
-    .read_address(hid_res_read_addr),
+    .read_address(hid_res_rd_addr),
     .read_data_out(hid_res_rd_data)
 );
 

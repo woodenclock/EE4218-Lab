@@ -235,6 +235,9 @@ end
                 end
             end
         end
+        else begin
+            hid_res_wr_en <= 1'b0;
+        end
     end
 
 endmodule

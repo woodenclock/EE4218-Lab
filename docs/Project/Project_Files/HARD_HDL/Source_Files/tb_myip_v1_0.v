@@ -43,7 +43,7 @@ module tb_myip_v1_0();
     reg [width-1:0] test_input_memory
         [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_INPUT_WORDS-1];
     reg [width-1:0] test_result_expected_memory [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
-    reg result_memory [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
+    reg [width-1:0] result_memory [0:NUMBER_OF_TEST_VECTORS*NUMBER_OF_OUTPUT_WORDS-1];
 
     integer word_cnt, test_case_cnt;
     reg success = 1'b1;
@@ -111,6 +111,12 @@ module tb_myip_v1_0();
              word_cnt = word_cnt + 1) begin
             success = success &
                 (result_memory[word_cnt] == test_result_expected_memory[word_cnt]);
+            if (result_memory[word_cnt] != test_result_expected_memory[word_cnt]) begin
+                $display("Mismatch at %0d: got %h expected %h",
+                    word_cnt,
+                    result_memory[word_cnt],
+                    test_result_expected_memory[word_cnt]);
+            end
         end
 
         if (success)
