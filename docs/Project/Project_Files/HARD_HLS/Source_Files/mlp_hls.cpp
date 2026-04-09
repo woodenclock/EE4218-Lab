@@ -53,9 +53,9 @@ void mlp_hls(AXI_stream &in_stream, AXI_stream &out_stream)
 
     // Partition weights across their neuron/weight dimension so inner-loop
     // reads are resolved in parallel (enables II=1 pipelining of the k-loop).
-#pragma HLS ARRAY_PARTITION variable=W_HID  complete dim=2
-#pragma HLS ARRAY_PARTITION variable=W_OUT  complete dim=1
-#pragma HLS ARRAY_PARTITION variable=N_sig  complete dim=2
+    #pragma HLS ARRAY_PARTITION variable=W_HID  complete dim=2
+    #pragma HLS ARRAY_PARTITION variable=W_OUT  complete dim=1
+    #pragma HLS ARRAY_PARTITION variable=N_sig  complete dim=2
 
     // ── 1. Read X[64][8] from input stream (512 words) ───────────────────────
     READ_X_ROW:
