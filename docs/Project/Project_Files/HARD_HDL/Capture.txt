@@ -1,9 +1,4 @@
-Zynq MP First Stage Boot Loader                                               
-Release 2025.2   Mar 30 2026  -  06:04:21                                     
-PMU-FW is not running, certain applications may not be supported.             
-Ready to receive X.csv                                                        
-Received 1703 bytes                                                           
-RES_BEGIN                                                                  
+RES_BEGIN
 0
 1
 1
@@ -48,7 +43,7 @@ RES_BEGIN
 1
 0
 0
-1
+0
 1
 1
 1
@@ -68,5 +63,6 @@ RES_BEGIN
 0
 1
 0
-RES_END                                                                       
-NN_US,50
+RES_END
+NN_US,9
+Accuracy: 98.43%
