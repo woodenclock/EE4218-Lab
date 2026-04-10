@@ -220,6 +220,7 @@ int main(void)
     PrintResCsv(RES);
     xil_printf("RES_END\r\n");
     xil_printf("NN_US,%lu\r\n", counts_to_us(delta));
+    xil_printf("NN_CYCLES, %1u\r\n", delta);
 
     {
         float acc = calc_accuracy(RES, LABELS);
